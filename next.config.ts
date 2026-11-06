@@ -4,8 +4,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  turbopack: { root: process.cwd() },
 };
 
-export default function config() {
-  return nextConfig;
-}
+export default nextConfig;

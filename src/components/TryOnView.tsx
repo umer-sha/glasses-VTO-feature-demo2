@@ -17,7 +17,7 @@ import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
 import { ARScene, TUNE } from "@/lib/arScene";
 import { FACE_POSITIONS } from "@/lib/faceMesh";
 import type { Glasses } from "@/lib/glasses";
-import AIStylistOverlay from "@/components/AIStylistOverlay";
+import { usePrefs } from "@/components/Providers";
 
 const WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
 const MODEL_URL =
@@ -118,6 +118,7 @@ interface TryOnViewProps {
   onSelectColor: (colorName: string) => void;
   theme?: "dark" | "light";
   onFaceScanned?: (metrics: { shape: string; skinTone: string } | null) => void;
+  onStarted?: () => void;
 }
 
 export default function TryOnView({
@@ -128,7 +129,9 @@ export default function TryOnView({
   onSelectFrame,
   onSelectColor,
   onFaceScanned,
+  onStarted,
 }: TryOnViewProps) {
+  const { t } = usePrefs();
   const boxRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -234,6 +237,7 @@ export default function TryOnView({
       roRef.current.observe(boxRef.current!);
 
       setStatus("running");
+      onStarted?.();
       runLoop(video, landmarkerRef.current, scene);
     } catch (e) {
       setStatus("error");
@@ -404,13 +408,13 @@ export default function TryOnView({
     >
       {status === "running" && faceMetrics && (
         <div className="absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
-          Shape: <span className="font-semibold text-emerald-400">{faceMetrics.shape}</span> Tone:{" "}
+          {t("tryon.shape")}: <span className="font-semibold text-emerald-400">{faceMetrics.shape}</span> {t("tryon.tone")}:{" "}
           <span className="font-semibold text-amber-400">{faceMetrics.skinTone}</span>
         </div>
       )}
       {status === "running" && !faceMetrics && (
         <div className="absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
-          Look straight at the camera… {Math.round(scan * 100)}%
+          {t("tryon.look")} {Math.round(scan * 100)}%
         </div>
       )}
 
@@ -469,27 +473,17 @@ export default function TryOnView({
         style={{ transform: "scaleX(-1)" }}
       />
 
-      {status === "running" && (
-        <AIStylistOverlay
-          currentProduct={product}
-          currentKey={productKey}
-          currentColor={currentColorName}
-          onSelectFrame={onSelectFrame}
-          onSelectColor={onSelectColor}
-          faceMetrics={faceMetrics}
-        />
-      )}
 
       {status !== "running" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center">
           {status === "loading" ? (
-            <p className="text-neutral-300">Starting camera and face tracking…</p>
+            <p className="text-neutral-300">{t("tryon.starting")}</p>
           ) : (
             <button
               onClick={start}
               className="rounded-full bg-white px-8 py-4 font-medium text-neutral-950 transition hover:bg-neutral-200"
             >
-              📷 Launch Live Camera Try-On
+              📷 {t("tryon.start")}
             </button>
           )}
           {message && <p className="max-w-md text-sm text-red-400">{message}</p>}

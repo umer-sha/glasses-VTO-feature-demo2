@@ -94,8 +94,6 @@ function isLens(m: THREE.Material, extra: string[]) {
 }
 
 // ---------------------- models with ONE baked texture (AI-generated) ----------------------
-// These have no separate lens / frame materials. We find the lenses from the texture + shape
-// and split the mesh in two, so the lenses can be see-through and the frame can be recoloured.
 function findLens(mesh: THREE.Mesh): Uint8Array | null {
   const g = mesh.geometry;
   const pos = g.attributes.position;
@@ -118,7 +116,6 @@ function findLens(mesh: THREE.Mesh): Uint8Array | null {
   }
   const W = maxx - minx, cx = (maxx + minx) / 2, cy = (maxy + miny) / 2;
 
-  // colour of the texture at every vertex
   const S = 1024;
   const cv = document.createElement("canvas");
   cv.width = S; cv.height = S;
@@ -137,7 +134,6 @@ function findLens(mesh: THREE.Mesh): Uint8Array | null {
     C[i * 3] = px[o]; C[i * 3 + 1] = px[o + 1]; C[i * 3 + 2] = px[o + 2];
   }
 
-  // weld vertices that sit at the same spot (texture seams split them), so the surface is connected
   const q = 1 / (W * 1e-4);
   const key = new Map<string, number>();
   const canon = new Uint32Array(n);
@@ -167,7 +163,6 @@ function findLens(mesh: THREE.Mesh): Uint8Array | null {
   const dE = (a: number, b: number) =>
     Math.hypot(L[a * 3] - L[b * 3], L[a * 3 + 1] - L[b * 3 + 1], L[a * 3 + 2] - L[b * 3 + 2]);
 
-  // neighbours
   const ia = idx.array;
   const deg = new Uint32Array(m + 1);
   for (let t = 0; t < ia.length; t++) deg[canon[ia[t]] + 1] += 2;
@@ -180,7 +175,6 @@ function findLens(mesh: THREE.Mesh): Uint8Array | null {
       adj[fill[a]++] = b; adj[fill[b]++] = a;
     }
 
-  // seeds: points on the front of each lens (several heights, so gradient lenses are covered)
   const slab = 0.08 * W;
   const seeds: number[] = [], seedX: number[] = [];
   for (const sx of [-1, 1])
@@ -195,7 +189,6 @@ function findLens(mesh: THREE.Mesh): Uint8Array | null {
       if (best >= 0) { seeds.push(best); seedX.push(cx + sx * 0.26 * W); }
     }
 
-  // grow from each seed over neighbours with a similar colour, staying on the lens plane
   const out = new Uint8Array(m);
   for (let si = 0; si < seeds.length; si++) {
     const s = seeds[si], sideX = seedX[si], zs = cp[s * 3 + 2];
@@ -259,11 +252,11 @@ type Recolorable = {
 };
 
 type Built = {
-  group: THREE.Group; // normalised: front of frame = 1 unit wide, origin at front centre
+  group: THREE.Group;
   recolor: Recolorable[];
   materials: THREE.Material[];
   lensMats: THREE.MeshBasicMaterial[];
-  baked: boolean; // one baked texture: recolouring keeps the texture's light/dark detail
+  baked: boolean;
 };
 
 const loader = new GLTFLoader();
@@ -278,7 +271,7 @@ export class ARScene {
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
   camera: THREE.PerspectiveCamera;
-  private anchor = new THREE.Group(); // follows the head
+  private anchor = new THREE.Group();
   private glassesHolder = new THREE.Group();
   private key: THREE.DirectionalLight;
   private fill: THREE.HemisphereLight;
@@ -287,8 +280,6 @@ export class ARScene {
   private envTex: THREE.Texture | null = null;
 
   private lastSeen = -1;
-  // screen position (u, v) is filtered fast so the glasses stay glued to the face;
-  // depth (d) is noisy so it is filtered slowly. Filtering x/y/z separately made the glasses swim.
   private fu = new OneEuro(1.2, 20);
   private fv = new OneEuro(1.2, 20);
   private fd = new OneEuro(0.9, 0.1);
@@ -325,7 +316,6 @@ export class ARScene {
     this.camera = new THREE.PerspectiveCamera(TUNE.fov, 4 / 3, 1, 2000);
     this.camera.position.set(0, 0, 0);
 
-    // soft studio reflections (no download needed)
     const pm = new THREE.PMREMGenerator(r);
     this.envTex = pm.fromScene(new RoomEnvironment(), 0.04).texture;
     pm.dispose();
@@ -345,7 +335,6 @@ export class ARScene {
     this.key.shadow.bias = -0.0004;
     this.scene.add(this.key, this.key.target);
 
-    // ---- the head: invisible mask + skull (write depth only) and a soft shadow catcher ----
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.Float32BufferAttribute(FACE_POSITIONS, 3));
     geo.setIndex(FACE_INDICES);
@@ -384,7 +373,6 @@ export class ARScene {
   private skull: THREE.Mesh;
   private depthOnly: THREE.MeshBasicMaterial;
 
-  /** debug: show the invisible face mask + skull as a red ghost */
   showMask(on: boolean) {
     const m = this.depthOnly;
     m.colorWrite = on;
@@ -406,7 +394,6 @@ export class ARScene {
     this.camera.updateProjectionMatrix();
   }
 
-  /** light estimation: luma 0..1 and an rgb tint from the camera picture */
   setLight(luma: number, rgb: [number, number, number]) {
     const k = THREE.MathUtils.clamp(0.45 + luma * 1.1, 0.6, 1.35);
     this.renderer.toneMappingExposure = k;
@@ -416,7 +403,6 @@ export class ARScene {
     this.fill.color.copy(tint);
   }
 
-  // ---------------------- building the glasses ----------------------
   async setProduct(product: Glasses, color: string | null, colorName: string) {
     const my = ++this.token;
     this.color = color;
@@ -449,7 +435,6 @@ export class ARScene {
       const tint = m.userData.tint as { uTint: { value: THREE.Color }; uTintAmt: { value: number } } | undefined;
       if (color) {
         if (this.built.baked && tint) {
-          // baked texture: keep its light/dark detail but swap its colour
           m.map = r.origMap;
           m.color.set(0xffffff);
           tint.uTint.value.set(color);
@@ -484,7 +469,6 @@ export class ARScene {
     const clone = source.clone(true);
     clone.updateMatrixWorld(true);
 
-    // ---- AI-generated model with one mesh + one baked texture? split the lenses off the frame ----
     let baked = false;
     {
       const ms: THREE.Mesh[] = [];
@@ -542,7 +526,6 @@ export class ARScene {
         const p = std === mat ? (mat.clone() as THREE.MeshPhysicalMaterial) : std;
         materials.push(p);
         p.envMapIntensity = 1;
-        // arms fade out once they pass the ear, so they look like they go behind it
         p.transparent = true;
         const tint = { uTint: { value: new THREE.Color(1, 1, 1) }, uTintAmt: { value: 0 } };
         p.userData.tint = tint;
@@ -577,7 +560,6 @@ export class ARScene {
       mesh.castShadow = mesh.visible;
     });
 
-    // ---- which materials can be recoloured: the ones named in glasses.ts, else the biggest frame material ----
     const groups = new Map<string, number>();
     frameMats.forEach((fm) => groups.set(fm.name, (groups.get(fm.name) ?? 0) + fm.verts));
     const chosen = new Set<string>(recolorNames.filter((n) => groups.has(n)));
@@ -599,7 +581,6 @@ export class ARScene {
       }
     });
 
-    // glossy reflection layer on top of each tinted lens (adds light, doesn't hide the eyes)
     const refl = new THREE.MeshPhysicalMaterial({
       color: 0x000000,
       roughness: 0.04,
@@ -607,7 +588,6 @@ export class ARScene {
       ior: 2.0,
       envMapIntensity: 1.1,
       transparent: true,
-      // adds light on top without touching the canvas transparency (plain "additive" made the lens opaque black)
       blending: THREE.CustomBlending,
       blendEquation: THREE.AddEquation,
       blendSrc: THREE.OneFactor,
@@ -625,9 +605,8 @@ export class ARScene {
       lm.add(r);
     }
 
-    // ---- normalise: front of the frame 1 unit wide, origin at the front centre ----
     const holder = new THREE.Group();
-    holder.rotation.y = baked ? 0 : product.turn ?? 0; // AI-generated models already face forward
+    holder.rotation.y = product.turn ?? 0;;
     holder.add(clone);
     const outer = new THREE.Group();
     outer.add(holder);
@@ -655,21 +634,13 @@ export class ARScene {
 
     if (TUNE.straighten) this.fitArms(outer);
 
-    console.log(
-      `[Lumiere] ${product.model}: ${lensMeshes.length} lens mesh(es), baked=${baked}, recolouring: ${[...chosen].join(", ") || "nothing"}`
-    );
     return { group: outer, recolor, materials, lensMats, baked };
   }
 
-  /**
-   * Reshape the arms so they run from the hinge to the sides of the head (like real glasses that
-   * flex open when worn). Works for any model: it measures where the arms are and moves them.
-   */
   private fitArms(outer: THREE.Group) {
-    // mesh.matrixWorld already includes the 1/width scale, so it maps straight into normalised units
     const v = new THREE.Vector3();
     const meshes: { mesh: THREE.Mesh; M: THREE.Matrix4 }[] = [];
-    const N = 9; // slices for z in -0.1 .. -1.0
+    const N = 9;
     const slices: number[][] = Array.from({ length: N }, () => []);
     const hinge: number[] = [];
     outer.traverse((o) => {
@@ -689,10 +660,8 @@ export class ARScene {
     });
     const med = (a: number[]) => a.sort((x, y) => x - y)[Math.floor(a.length / 2)];
     const xh = hinge.length > 10 ? med(hinge) : 0.49;
-    // median |x| of the arms per slice (null where there is no data)
     const m: (number | null)[] = slices.map((s) => (s.length >= 6 ? med(s) : null));
     if (m.filter((x) => x !== null).length < 2) return;
-    // fill the gaps
     for (let k = 0; k < N; k++) {
       if (m[k] !== null) continue;
       let lo = k - 1, hi = k + 1;
@@ -706,7 +675,6 @@ export class ARScene {
       const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
       return t * t * (3 - 2 * t);
     };
-    // how far to move the arm at each slice (outward = positive)
     const shift = m.map((x, k) => xh + (earX - xh) * sm(0.1, 0.55, 0.15 + 0.1 * k) - x!);
     const shiftAt = (z: number) => {
       const f = Math.min(N - 1, Math.max(0, (-z - 0.15) / 0.1));
@@ -735,8 +703,6 @@ export class ARScene {
     }
   }
 
-  // ---------------------- every frame ----------------------
-  /** m = MediaPipe face matrix (or null when no face). t = seconds. */
   setPose(m: THREE.Matrix4 | null, t: number) {
     if (!m) {
       if (this.lastSeen >= 0 && t - this.lastSeen > 0.25) {
@@ -753,7 +719,7 @@ export class ARScene {
     const { p, s, q } = this.tmp;
     m.decompose(p, q, s);
     const d = -p.z;
-    if (d < 5) return; // nonsense pose, skip this frame
+    if (d < 5) return;
     this.lastSeen = t;
     if (this.hasPrev && q.dot(this.prevQ) < 0) q.set(-q.x, -q.y, -q.z, -q.w);
 
@@ -779,7 +745,6 @@ export class ARScene {
   }
 
   render() {
-    // keep tunables live
     this.glassesHolder.position.set(0, TUNE.y, TUNE.z);
     this.glassesHolder.rotation.x = TUNE.pitch;
     this.glassesHolder.scale.setScalar(TUNE.width);
@@ -801,7 +766,6 @@ export class ARScene {
     }
 
     if (this.anchor.visible) {
-      // room light stays fixed in the camera's world while the head moves under it
       const hp = this.tmp.p.setFromMatrixPosition(this.anchor.matrix);
       this.key.position.set(hp.x + 4, hp.y + 15, hp.z + 28);
       this.key.target.position.copy(hp);

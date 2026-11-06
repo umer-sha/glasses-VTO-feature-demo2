@@ -1,65 +1,73 @@
 export interface Glasses {
+  id: string;
   name: string;
+  tagline: string;
   model: string;
   price: number;
-  shape: string;
+  shape: string; // "rect" | "round" - used by the stylist
   color: string;
-  hostingerUrl: string;
-  turn?: number;
-  lens?: string[];
-  hide?: string[];
-  recolor?: string[];
-  colors?: { name: string; hex: string; original?: boolean }[];
+  turn?: number; // rotate the model about Y so the lenses face the camera
+  lens?: string[]; // extra material names to treat as lenses
+  hide?: string[]; // material names to hide
+  recolor?: string[]; // material names that change colour (default: the biggest frame part)
+  colors: { name: string; hex: string; original?: boolean }[];
 }
 
 export const glasses: Record<string, Glasses> = {
-  aviator: {
-    name: "Luxe Square Aviator Sunglasses",
-    model: "/models/glasses.glb",
-    price: 64,
-    shape: "aviator",
-    color: "#1c1c1c",
-    hostingerUrl: "https://realmenluxury.fashion/luxury-gold-frame-square-sunglasses",
-    turn: 0,
-    colors: [
-      { name: "Matte Black", hex: "#1c1c1c", original: true },
-      { name: "Gold / Tinted", hex: "#d4af37" },
-      { name: "Silver / Smoke", hex: "#c0c0c0" }
-    ],
-  },
-  tortoise: {
-    name: "Retro Oval Sunglasses",
+  bold: {
+    id: "bold",
+    name: "Heritage Bold",
+    tagline: "Thick acetate rectangle with wood-grain temples.",
     model: "/models/glasses1.glb",
     price: 64,
-    shape: "round",
-    color: "#8b5a2b",
-    hostingerUrl: "https://realmenluxury.fashion/retro-oval-gold-sunglasses",
-    turn: -Math.PI / 2,
+    shape: "rect",
+    color: "#111111",
+    turn: 0,
+    recolor: ["Frame", "Handles"],
     colors: [
-      { name: "Tortoiseshell", hex: "#8b5a2b", original: true },
-      { name: "Amber Brown", hex: "#ffbf00" },
-      { name: "Classic Black", hex: "#111111" }
+      { name: "Original Black", hex: "#111111", original: true },
+      { name: "Navy", hex: "#1f2a44" },
+      { name: "Burgundy", hex: "#5b1a2b" },
+      { name: "Forest", hex: "#1f3d2e" },
     ],
   },
   wire: {
-    name: "Geometric Navigator Sunglasses",
+    id: "wire",
+    name: "Round Wire",
+    tagline: "Thin round wire frame with a light, vintage feel.",
+    model: "/models/glasses.glb",
+    price: 64,
+    shape: "round",
+    color: "#9e6549",
+    turn: 0,
+    recolor: ["Copper"],
+    colors: [
+      { name: "Original Copper", hex: "#9e6549", original: true },
+      { name: "Gold", hex: "#d4af37" },
+      { name: "Silver", hex: "#c0c0c0" },
+      { name: "Black", hex: "#111111" },
+    ],
+  },
+  rect: {
+    id: "rect",
+    name: "Slim Rectangle",
+    tagline: "Lightweight everyday rectangle with metal hinges.",
     model: "/models/glasses2.glb",
     price: 64,
     shape: "rect",
-    color: "#1c1c1c",
-    hostingerUrl: "https://realmenluxury.fashion/retro-square-navigator-sunglasses",
+    color: "#222222",
     turn: -Math.PI / 2,
+    recolor: ["plastik"],
     colors: [
-      { name: "Gunmetal Wire", hex: "#1c1c1c", original: true },
-      { name: "Rose Gold", hex: "#b76e79" },
-      { name: "Yellow Gold", hex: "#d4af37" }
+      { name: "Original Black", hex: "#222222", original: true },
+      { name: "Navy", hex: "#1f2a44" },
+      { name: "Tortoise", hex: "#6b3f1f" },
+      { name: "Crimson", hex: "#7a1226" },
     ],
   },
 };
+export const glassesList = [glasses.bold, glasses.rect, glasses.wire];
 
-export function getGlasses(id?: string): Glasses {
-  if (id && glasses[id]) {
-    return glasses[id];
-  }
-  return glasses["aviator"];
+export function getGlasses(id?: string | null): Glasses {
+  return (id && glasses[id]) || glasses.bold;
 }
