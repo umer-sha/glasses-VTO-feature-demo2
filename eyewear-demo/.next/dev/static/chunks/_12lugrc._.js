@@ -370,7 +370,16 @@ const TryOnView = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modul
             "[project]/src/components/TryOnView.tsx [app-client] (ecmascript, next/dynamic entry)"
         ]
     },
-    ssr: false
+    ssr: false,
+    // shown while the camera code downloads, so this area is never an empty gap
+    loading: ()=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "mx-auto flex aspect-[4/3] w-full max-w-3xl items-center justify-center rounded-2xl bg-surface-2 text-sm text-muted",
+            children: "Loading camera…"
+        }, void 0, false, {
+            fileName: "[project]/src/app/try-on/page.tsx",
+            lineNumber: 18,
+            columnNumber: 5
+        }, ("TURBOPACK compile-time value", void 0))
 });
 _c = TryOnView;
 function TryOnContent({ searchParams }) {
@@ -399,11 +408,11 @@ function TryOnContent({ searchParams }) {
                 className: "mb-6 flex flex-wrap items-end justify-between gap-3",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "font-display text-3xl tracking-tight sm:text-4xl",
+                        className: "font-display text-3xl sm:text-4xl",
                         children: t("tryon.title")
                     }, void 0, false, {
                         fileName: "[project]/src/app/try-on/page.tsx",
-                        lineNumber: 41,
+                        lineNumber: 49,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -417,13 +426,13 @@ function TryOnContent({ searchParams }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/try-on/page.tsx",
-                        lineNumber: 42,
+                        lineNumber: 50,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/try-on/page.tsx",
-                lineNumber: 40,
+                lineNumber: 48,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -443,7 +452,7 @@ function TryOnContent({ searchParams }) {
                                 onStarted: ()=>setStarted(true)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 50,
+                                lineNumber: 58,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -458,12 +467,12 @@ function TryOnContent({ searchParams }) {
                                     started: started
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 61,
+                                    lineNumber: 69,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 60,
+                                lineNumber: 68,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -471,13 +480,13 @@ function TryOnContent({ searchParams }) {
                                 children: t("tryon.hint")
                             }, void 0, false, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 71,
+                                lineNumber: 79,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/try-on/page.tsx",
-                        lineNumber: 49,
+                        lineNumber: 57,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
@@ -497,7 +506,7 @@ function TryOnContent({ searchParams }) {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 79,
+                                                lineNumber: 87,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -507,13 +516,13 @@ function TryOnContent({ searchParams }) {
                                                 children: "✕"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 80,
+                                                lineNumber: 88,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 78,
+                                        lineNumber: 86,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -525,7 +534,7 @@ function TryOnContent({ searchParams }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 82,
+                                        lineNumber: 90,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -533,7 +542,7 @@ function TryOnContent({ searchParams }) {
                                         children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][rec.id].name
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 85,
+                                        lineNumber: 93,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -541,7 +550,7 @@ function TryOnContent({ searchParams }) {
                                         children: rec.colorName
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 94,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -553,13 +562,13 @@ function TryOnContent({ searchParams }) {
                                         children: t("tryon.apply")
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 87,
+                                        lineNumber: 95,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 77,
+                                lineNumber: 85,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -570,7 +579,7 @@ function TryOnContent({ searchParams }) {
                                         children: t("tryon.frames")
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 100,
+                                        lineNumber: 108,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -586,7 +595,7 @@ function TryOnContent({ searchParams }) {
                                                                 children: g.name
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                                lineNumber: 111,
+                                                                lineNumber: 119,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -594,13 +603,13 @@ function TryOnContent({ searchParams }) {
                                                                 children: g.tagline
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                                lineNumber: 112,
+                                                                lineNumber: 120,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                                        lineNumber: 110,
+                                                        lineNumber: 118,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -608,24 +617,24 @@ function TryOnContent({ searchParams }) {
                                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["money"])(g.price)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                                        lineNumber: 114,
+                                                        lineNumber: 122,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, g.id, true, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 103,
+                                                lineNumber: 111,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 101,
+                                        lineNumber: 109,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 99,
+                                lineNumber: 107,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -641,13 +650,13 @@ function TryOnContent({ searchParams }) {
                                                 children: active.name
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 122,
+                                                lineNumber: 130,
                                                 columnNumber: 36
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 129,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -662,18 +671,18 @@ function TryOnContent({ searchParams }) {
                                                 }
                                             }, c.name, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 126,
+                                                lineNumber: 134,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 124,
+                                        lineNumber: 132,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 120,
+                                lineNumber: 128,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -687,7 +696,7 @@ function TryOnContent({ searchParams }) {
                                                 children: product.name
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 142,
+                                                lineNumber: 150,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -695,13 +704,13 @@ function TryOnContent({ searchParams }) {
                                                 children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["money"])(product.price)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 143,
+                                                lineNumber: 151,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 149,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -713,7 +722,7 @@ function TryOnContent({ searchParams }) {
                                                 children: t("shop.add")
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 146,
+                                                lineNumber: 154,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -725,37 +734,37 @@ function TryOnContent({ searchParams }) {
                                                 children: t("product.buy")
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                                lineNumber: 147,
+                                                lineNumber: 155,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/try-on/page.tsx",
-                                        lineNumber: 145,
+                                        lineNumber: 153,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 140,
+                                lineNumber: 148,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/try-on/page.tsx",
-                        lineNumber: 75,
+                        lineNumber: 83,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/try-on/page.tsx",
-                lineNumber: 47,
+                lineNumber: 55,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/try-on/page.tsx",
-        lineNumber: 39,
+        lineNumber: 47,
         columnNumber: 5
     }, this);
 }
@@ -774,19 +783,19 @@ function TryOnPage({ searchParams }) {
             children: "…"
         }, void 0, false, {
             fileName: "[project]/src/app/try-on/page.tsx",
-            lineNumber: 166,
+            lineNumber: 174,
             columnNumber: 25
         }, this),
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TryOnContent, {
             searchParams: searchParams
         }, void 0, false, {
             fileName: "[project]/src/app/try-on/page.tsx",
-            lineNumber: 167,
+            lineNumber: 175,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/try-on/page.tsx",
-        lineNumber: 166,
+        lineNumber: 174,
         columnNumber: 5
     }, this);
 }
@@ -824,7 +833,8 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-/* eslint-disable @typescript-eslint/no-explicit-any */ function pickVoice(speech) {
+/* eslint-disable @typescript-eslint/no-explicit-any */ const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+function pickVoice(speech) {
     if (("TURBOPACK compile-time value", "object") === "undefined" || !("speechSynthesis" in window)) return null;
     const voices = window.speechSynthesis.getVoices();
     const prefix = speech.split("-")[0].toLowerCase();
@@ -848,7 +858,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
     const wantRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false); // the user wants the mic on
     const speakingRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
     const recRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const audioRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const audioRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null); // one shared element, unlocked by the first tap (phones need this)
     const ttsOff = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false); // true once we know ElevenLabs isn't set up (then the browser voice is used straight away)
     const cacheRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(new Map()); // sentences already spoken cost nothing the second time
     const utterRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null); // keeps the sentence alive (Chrome can drop it otherwise)
@@ -884,6 +894,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
             const code = speech ?? live.current.speechLang;
+            const l2 = code.split("-")[0].toLowerCase();
             // stop whatever is playing, and don't listen to ourselves while talking
             audioRef.current?.pause();
             if ("speechSynthesis" in window) window.speechSynthesis.cancel();
@@ -917,9 +928,12 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                         const name = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LANGS"].find({
                             "AIStylistOverlay.useCallback[speak].browserVoice": (l)=>l.speech === code
                         }["AIStylistOverlay.useCallback[speak].browserVoice"])?.label ?? code;
-                        setNote((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(live.current.lang, "voice.novoice", {
-                            lang: name
-                        }));
+                        // keep a more useful ElevenLabs error if there is one
+                        setNote({
+                            "AIStylistOverlay.useCallback[speak].browserVoice": (prev)=>prev.startsWith("Natural voice") || prev.startsWith("Voice service") ? prev : (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(live.current.lang, "voice.novoice", {
+                                    lang: name
+                                })
+                        }["AIStylistOverlay.useCallback[speak].browserVoice"]);
                     }
                     u.onend = done;
                     u.onerror = done;
@@ -933,16 +947,18 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
             }["AIStylistOverlay.useCallback[speak].browserVoice"];
             const play = {
                 "AIStylistOverlay.useCallback[speak].play": (url)=>{
-                    const au = new Audio(url);
+                    const au = audioRef.current ?? new Audio();
                     audioRef.current = au;
                     au.onended = done;
                     au.onerror = ({
                         "AIStylistOverlay.useCallback[speak].play": ()=>browserVoice()
                     })["AIStylistOverlay.useCallback[speak].play"];
+                    au.src = url;
                     return au.play();
                 }
             }["AIStylistOverlay.useCallback[speak].play"];
-            const cached = cacheRef.current.get(text);
+            const cacheKey = l2 + "|" + text;
+            const cached = cacheRef.current.get(cacheKey);
             if (cached) {
                 play(cached).catch({
                     "AIStylistOverlay.useCallback[speak]": ()=>browserVoice()
@@ -959,7 +975,8 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    text
+                    text,
+                    lang: l2
                 })
             }).then({
                 "AIStylistOverlay.useCallback[speak]": (r)=>{
@@ -972,12 +989,13 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
             }["AIStylistOverlay.useCallback[speak]"]).then({
                 "AIStylistOverlay.useCallback[speak]": (blob)=>{
                     const url = URL.createObjectURL(blob);
-                    cacheRef.current.set(text, url);
+                    cacheRef.current.set(cacheKey, url);
                     return play(url);
                 }
             }["AIStylistOverlay.useCallback[speak]"]).catch({
                 "AIStylistOverlay.useCallback[speak]": (err)=>{
-                    setNote("Voice service error: " + String(err.message || err));
+                    const m = String(err.message || err);
+                    setNote(m.includes("501") ? "Natural voice isn't set up on this server (ELEVENLABS_API_KEY missing)." : "Voice service error: " + m);
                     browserVoice();
                 }
             }["AIStylistOverlay.useCallback[speak]"]);
@@ -1173,6 +1191,33 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
             recRef.current?.stop();
         } catch  {}
     }
+    // phones only allow sound after a tap: unlock one shared audio element on the first touch
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AIStylistOverlay.useEffect": ()=>{
+            const au = new Audio();
+            audioRef.current = au;
+            const unlock = {
+                "AIStylistOverlay.useEffect.unlock": ()=>{
+                    au.src = SILENT_WAV;
+                    au.play().then({
+                        "AIStylistOverlay.useEffect.unlock": ()=>au.pause()
+                    }["AIStylistOverlay.useEffect.unlock"]).catch({
+                        "AIStylistOverlay.useEffect.unlock": ()=>{}
+                    }["AIStylistOverlay.useEffect.unlock"]);
+                    window.removeEventListener("pointerdown", unlock);
+                    window.removeEventListener("keydown", unlock);
+                }
+            }["AIStylistOverlay.useEffect.unlock"];
+            window.addEventListener("pointerdown", unlock);
+            window.addEventListener("keydown", unlock);
+            return ({
+                "AIStylistOverlay.useEffect": ()=>{
+                    window.removeEventListener("pointerdown", unlock);
+                    window.removeEventListener("keydown", unlock);
+                }
+            })["AIStylistOverlay.useEffect"];
+        }
+    }["AIStylistOverlay.useEffect"], []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AIStylistOverlay.useEffect": ()=>{
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1360,7 +1405,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 className: "absolute inset-0 animate-ping rounded-full bg-danger/40"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 383,
+                                lineNumber: 416,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -1382,26 +1427,26 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                         rx: "3"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                        lineNumber: 385,
+                                        lineNumber: 418,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                         d: "M5 11a7 7 0 0 0 14 0M12 18v3"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                        lineNumber: 386,
+                                        lineNumber: 419,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 384,
+                                lineNumber: 417,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 374,
+                        lineNumber: 407,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1412,7 +1457,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 children: t("voice.title")
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 391,
+                                lineNumber: 424,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1421,7 +1466,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 children: reply || (listening ? t("voice.listening") : t("voice.idle"))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 392,
+                                lineNumber: 425,
                                 columnNumber: 11
                             }, this),
                             heard && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1435,7 +1480,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 396,
+                                lineNumber: 429,
                                 columnNumber: 13
                             }, this),
                             !reply && !heard && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1448,7 +1493,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 400,
+                                lineNumber: 433,
                                 columnNumber: 32
                             }, this),
                             !supported && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1456,7 +1501,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 children: t("voice.unsupported")
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 401,
+                                lineNumber: 434,
                                 columnNumber: 26
                             }, this),
                             note && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1464,19 +1509,19 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                                 children: note
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 402,
+                                lineNumber: 435,
                                 columnNumber: 20
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 390,
+                        lineNumber: 423,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                lineNumber: 373,
+                lineNumber: 406,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1492,7 +1537,7 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                         className: "input min-w-0 flex-1 !rounded-full"
                     }, void 0, false, {
                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 407,
+                        lineNumber: 440,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1501,23 +1546,23 @@ function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFr
                         children: t("voice.send")
                     }, void 0, false, {
                         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 415,
+                        lineNumber: 448,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                lineNumber: 406,
+                lineNumber: 439,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/AIStylistOverlay.tsx",
-        lineNumber: 372,
+        lineNumber: 405,
         columnNumber: 5
     }, this);
 }
-_s(AIStylistOverlay, "Wxh1zP78QiTBhqRH+t341b12Lfs=", false, function() {
+_s(AIStylistOverlay, "2KzkDUiBpJM2Pg1IWZ4oRCuvyXc=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"]

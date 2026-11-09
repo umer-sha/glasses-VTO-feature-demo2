@@ -24,6 +24,11 @@ export default function SiteHeader() {
     const id = setTimeout(() => setBump(false), 450);
     return () => clearTimeout(id);
   }, [count, mounted]);
+  // lock page scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menu ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menu]);
 
   const links = [
     { href: "/#collection", label: t("nav.shop") },
@@ -31,15 +36,32 @@ export default function SiteHeader() {
     { href: "/#how", label: t("nav.how") },
   ];
 
+  const langSelect = (cls: string) => (
+    <select
+      value={lang}
+      onChange={(e) => setLang(e.target.value as Lang)}
+      aria-label={t("nav.lang")}
+      className={`cursor-pointer appearance-none rounded-full border border-line bg-surface px-4 text-sm text-fg outline-none transition hover:border-muted focus:border-accent ${cls}`}
+    >
+      {LANGS.map((l) => (
+        <option key={l.code} value={l.code}>
+          {l.label}
+        </option>
+      ))}
+    </select>
+  );
+
+  const iconBtn =
+    "flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface text-fg transition hover:border-muted";
+
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-bg/80 backdrop-blur-xl">
-      <div className="container-x flex h-16 items-center justify-between gap-3">
-        <Link href="/" className="flex items-baseline gap-2" aria-label="Innovibe">
-          <span className="font-display text-2xl tracking-tight">Innovibe</span>
-          <span className="hidden text-[11px] uppercase tracking-[0.2em] text-muted lg:inline">{t("brand.tag")}</span>
+    <header className="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-xl">
+      <div className="container-x flex h-14 items-center justify-between gap-2 sm:h-16">
+        <Link href="/" className="flex items-baseline gap-2" aria-label="Innovibe" onClick={() => setMenu(false)}>
+          <span className="font-display text-2xl">Innovibe</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm md:flex">
+        <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className="text-muted transition hover:text-fg">
               {l.label}
@@ -48,27 +70,9 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <label className="relative flex items-center gap-2">
-            <span className="hidden text-xs text-muted sm:inline">{t("nav.lang")}</span>
-            <select
-              value={lang}
-              onChange={(e) => setLang(e.target.value as Lang)}
-              className="h-10 cursor-pointer appearance-none rounded-full border border-line bg-surface px-4 text-sm text-fg outline-none transition hover:border-muted focus:border-accent"
-            >
-              {LANGS.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {langSelect("hidden h-11 sm:block")}
 
-          <button
-            onClick={toggleTheme}
-            aria-label={t("nav.theme")}
-            title={t("nav.theme")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-fg transition hover:border-muted"
-          >
+          <button onClick={toggleTheme} aria-label={t("nav.theme")} title={t("nav.theme")} className={iconBtn}>
             {theme === "dark" ? (
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                 <circle cx="12" cy="12" r="4" />
@@ -81,11 +85,7 @@ export default function SiteHeader() {
             )}
           </button>
 
-          <Link
-            href="/cart"
-            aria-label={t("nav.cart")}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface text-fg transition hover:border-muted"
-          >
+          <Link href="/cart" aria-label={t("nav.cart")} className={`relative ${iconBtn}`} onClick={() => setMenu(false)}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 7h12l-1 12H7L6 7z" />
               <path d="M9 7a3 3 0 0 1 6 0" />
@@ -99,26 +99,31 @@ export default function SiteHeader() {
             )}
           </Link>
 
-          <button
-            onClick={() => setMenu((m) => !m)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface md:hidden"
-            aria-label="Menu"
-          >
+          <button onClick={() => setMenu((m) => !m)} className={`${iconBtn} md:hidden`} aria-label="Menu" aria-expanded={menu}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-              <path d="M4 7h16M4 12h16M4 17h16" />
+              {menu ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
             </svg>
           </button>
         </div>
       </div>
 
       {menu && (
-        <nav className="border-t border-line bg-bg md:hidden">
-          <div className="container-x flex flex-col py-2">
+        <nav className="fixed inset-x-0 bottom-0 top-14 z-40 overflow-y-auto bg-bg md:hidden">
+          <div className="container-x flex flex-col py-4">
             {links.map((l) => (
-              <Link key={l.href} href={l.href} onClick={() => setMenu(false)} className="py-3 text-sm text-muted hover:text-fg">
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenu(false)}
+                className="font-display border-b border-line py-5 text-3xl"
+              >
                 {l.label}
               </Link>
             ))}
+            <div className="mt-6 flex items-center justify-between gap-4 sm:hidden">
+              <span className="text-sm text-muted">{t("nav.lang")}</span>
+              {langSelect("h-11 flex-1")}
+            </div>
           </div>
         </nav>
       )}

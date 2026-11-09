@@ -20,6 +20,8 @@ interface AIStylistProps {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+
 function pickVoice(speech: string): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
   const voices = window.speechSynthesis.getVoices();
@@ -58,7 +60,7 @@ export default function AIStylistOverlay({
   const wantRef = useRef(false); // the user wants the mic on
   const speakingRef = useRef(false);
   const recRef = useRef<any>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // one shared element, unlocked by the first tap (phones need this)
   const ttsOff = useRef(false); // true once we know ElevenLabs isn't set up (then the browser voice is used straight away)
   const cacheRef = useRef<Map<string, string>>(new Map()); // sentences already spoken cost nothing the second time
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null); // keeps the sentence alive (Chrome can drop it otherwise)
@@ -77,6 +79,7 @@ export default function AIStylistOverlay({
     setReply(text);
     if (typeof window === "undefined") return;
     const code = speech ?? live.current.speechLang;
+    const l2 = code.split("-")[0].toLowerCase();
 
     // stop whatever is playing, and don't listen to ourselves while talking
     audioRef.current?.pause();
@@ -99,7 +102,12 @@ export default function AIStylistOverlay({
       if (v) u.voice = v;
       else if (synth.getVoices().length) {
         const name = LANGS.find((l) => l.speech === code)?.label ?? code;
-        setNote(translate(live.current.lang, "voice.novoice", { lang: name }));
+        // keep a more useful ElevenLabs error if there is one
+        setNote((prev) =>
+          prev.startsWith("Natural voice") || prev.startsWith("Voice service")
+            ? prev
+            : translate(live.current.lang, "voice.novoice", { lang: name }),
+        );
       }
       u.onend = done;
       u.onerror = done;
@@ -107,14 +115,16 @@ export default function AIStylistOverlay({
     };
 
     const play = (url: string) => {
-      const au = new Audio(url);
+      const au = audioRef.current ?? new Audio();
       audioRef.current = au;
       au.onended = done;
       au.onerror = () => browserVoice();
+      au.src = url;
       return au.play();
     };
 
-    const cached = cacheRef.current.get(text);
+    const cacheKey = l2 + "|" + text;
+    const cached = cacheRef.current.get(cacheKey);
     if (cached) {
       play(cached).catch(() => browserVoice());
       return;
@@ -124,7 +134,7 @@ export default function AIStylistOverlay({
     fetch("/api/tts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, lang: l2 }),
     })
       .then((r) => {
         if (!r.ok) {
@@ -135,11 +145,16 @@ export default function AIStylistOverlay({
       })
       .then((blob) => {
         const url = URL.createObjectURL(blob);
-        cacheRef.current.set(text, url);
+        cacheRef.current.set(cacheKey, url);
         return play(url);
       })
       .catch((err) => {
-        setNote("Voice service error: " + String(err.message || err));
+        const m = String(err.message || err);
+        setNote(
+          m.includes("501")
+            ? "Natural voice isn't set up on this server (ELEVENLABS_API_KEY missing)."
+            : "Voice service error: " + m,
+        );
         browserVoice();
       });
   }, []);
@@ -250,6 +265,24 @@ export default function AIStylistOverlay({
     setListening(false);
     try { recRef.current?.stop(); } catch { /* not running */ }
   }
+
+  // phones only allow sound after a tap: unlock one shared audio element on the first touch
+  useEffect(() => {
+    const au = new Audio();
+    audioRef.current = au;
+    const unlock = () => {
+      au.src = SILENT_WAV;
+      au.play().then(() => au.pause()).catch(() => { /* ignore */ });
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+    window.addEventListener("pointerdown", unlock);
+    window.addEventListener("keydown", unlock);
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, []);
 
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;

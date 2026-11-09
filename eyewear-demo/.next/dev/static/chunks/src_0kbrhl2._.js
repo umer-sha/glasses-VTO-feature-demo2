@@ -163,7 +163,7 @@ const FIT_SLIDERS = [
         step: 0.01
     }
 ];
-function TryOnView({ product, color, productKey, currentColorName, onSelectFrame, onSelectColor, onFaceScanned, onStarted }) {
+function TryOnView({ product, color, productKey, currentColorName, onFaceScanned, onStarted }) {
     _s();
     const { t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"])();
     const boxRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -180,7 +180,6 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
     const [aspect, setAspect] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(4 / 3);
     const [faceMetrics, setFaceMetrics] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [scan, setScan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
-    const [dbg, setDbg] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [fitOpen, setFitOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [fit, setFit] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(FIT_DEFAULTS);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -289,13 +288,13 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             }
             const scene = new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$arScene$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ARScene"](canvasRef.current);
             sceneRef.current = scene;
-            const fit = ()=>{
+            const fitScene = ()=>{
                 const b = boxRef.current;
                 scene.resize(b.clientWidth, b.clientHeight);
             };
             await new Promise((r)=>requestAnimationFrame(r));
-            fit();
-            roRef.current = new ResizeObserver(fit);
+            fitScene();
+            roRef.current = new ResizeObserver(fitScene);
             roRef.current.observe(boxRef.current);
             setStatus("running");
             onStarted?.();
@@ -306,7 +305,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             console.error(e);
         }
     }
-    // Draw high-density geometric face wireframe matching the mirrored video alignment perfectly
+    // Draw the face wireframe, aligned with the mirrored video
     const drawFaceMeshHUD = (lm, time)=>{
         const canvas = hudCanvasRef.current;
         if (!canvas) return;
@@ -1038,14 +1037,9 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             const p1 = lm[i];
             const p2 = lm[j];
             if (p1 && p2) {
-                // Direct un-flipped screen mapping to align accurately over the video feed
-                const x1 = p1.x * W;
-                const y1 = p1.y * H;
-                const x2 = p2.x * W;
-                const y2 = p2.y * H;
                 ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
+                ctx.moveTo(p1.x * W, p1.y * H);
+                ctx.lineTo(p2.x * W, p2.y * H);
                 ctx.stroke();
             }
         });
@@ -1143,8 +1137,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                 jaw: q.jaw
             });
             if (samples.length % 3 === 0) skin.push(...skinPatches(video, lm, scratch));
-            const progress = Math.min(1, samples.length / 25);
-            setScan(progress);
+            setScan(Math.min(1, samples.length / 25));
             if (samples.length >= 25 && skin.length >= 8) {
                 scanned = true;
                 const metrics = {
@@ -1183,7 +1176,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         children: faceMetrics.shape
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 411,
+                        lineNumber: 400,
                         columnNumber: 31
                     }, this),
                     " ",
@@ -1195,13 +1188,13 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         children: faceMetrics.skinTone
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 412,
+                        lineNumber: 401,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 410,
+                lineNumber: 399,
                 columnNumber: 9
             }, this),
             status === "running" && !faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1214,7 +1207,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 416,
+                lineNumber: 405,
                 columnNumber: 9
             }, this),
             status === "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1226,7 +1219,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         children: "⚙ Fit"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 423,
+                        lineNumber: 412,
                         columnNumber: 11
                     }, this),
                     fitOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1243,13 +1236,13 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                                                     children: fit[s.key].toFixed(2)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/TryOnView.tsx",
-                                                    lineNumber: 435,
+                                                    lineNumber: 424,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/TryOnView.tsx",
-                                            lineNumber: 433,
+                                            lineNumber: 422,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1262,13 +1255,13 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                                             className: "w-full"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/TryOnView.tsx",
-                                            lineNumber: 437,
+                                            lineNumber: 426,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, s.key, true, {
                                     fileName: "[project]/src/components/TryOnView.tsx",
-                                    lineNumber: 432,
+                                    lineNumber: 421,
                                     columnNumber: 17
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1277,19 +1270,19 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                                 children: "Reset"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/TryOnView.tsx",
-                                lineNumber: 448,
+                                lineNumber: 437,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 430,
+                        lineNumber: 419,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 422,
+                lineNumber: 411,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1305,7 +1298,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         className: "absolute inset-0 h-full w-full object-fill"
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 461,
+                        lineNumber: 450,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
@@ -1316,24 +1309,24 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         }
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 462,
+                        lineNumber: 451,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 460,
+                lineNumber: 449,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
                 ref: hudCanvasRef,
-                className: "absolute inset-0 h-full w-full pointer-events-none z-20 scaleX(-1)",
+                className: "pointer-events-none absolute inset-0 z-20 h-full w-full",
                 style: {
                     transform: "scaleX(-1)"
                 }
             }, void 0, false, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 470,
+                lineNumber: 455,
                 columnNumber: 7
             }, this),
             status !== "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1344,7 +1337,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         children: t("tryon.starting")
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 480,
+                        lineNumber: 464,
                         columnNumber: 13
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: start,
@@ -1355,7 +1348,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 482,
+                        lineNumber: 466,
                         columnNumber: 13
                     }, this),
                     message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1363,23 +1356,23 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                         children: message
                     }, void 0, false, {
                         fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 489,
+                        lineNumber: 473,
                         columnNumber: 23
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 478,
+                lineNumber: 462,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/TryOnView.tsx",
-        lineNumber: 404,
+        lineNumber: 393,
         columnNumber: 5
     }, this);
 }
-_s(TryOnView, "FhOK/UHq3rq4e2Y+dWBX3bA3NSo=", false, function() {
+_s(TryOnView, "oJ+izVqnoJDJ850p9S7MXvP+ROY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"]
     ];

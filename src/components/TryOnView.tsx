@@ -15,7 +15,6 @@ import * as THREE from "three";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
 import { ARScene, TUNE } from "@/lib/arScene";
-import { FACE_POSITIONS } from "@/lib/faceMesh";
 import type { Glasses } from "@/lib/glasses";
 import { usePrefs } from "@/components/Providers";
 
@@ -24,7 +23,7 @@ const MODEL_URL =
   "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
 
 // =============================== face shape + skin tone ===============================
-const AVG = { length: 1.153, forehead: 0.819, jaw: 0.775 }; 
+const AVG = { length: 1.153, forehead: 0.819, jaw: 0.775 };
 type Shape = "Oval" | "Round" | "Square" | "Heart" | "Oblong" | "Diamond";
 type Ratios = { length: number; forehead: number; jaw: number };
 
@@ -126,8 +125,6 @@ export default function TryOnView({
   color,
   productKey,
   currentColorName,
-  onSelectFrame,
-  onSelectColor,
   onFaceScanned,
   onStarted,
 }: TryOnViewProps) {
@@ -146,7 +143,6 @@ export default function TryOnView({
   const [aspect, setAspect] = useState(4 / 3);
   const [faceMetrics, setFaceMetrics] = useState<{ shape: string; skinTone: string } | null>(null);
   const [scan, setScan] = useState(0);
-  const [dbg, setDbg] = useState("");
   const [fitOpen, setFitOpen] = useState(false);
   const [fit, setFit] = useState<Record<FitKey, number>>(FIT_DEFAULTS);
 
@@ -227,13 +223,13 @@ export default function TryOnView({
 
       const scene = new ARScene(canvasRef.current!);
       sceneRef.current = scene;
-      const fit = () => {
+      const fitScene = () => {
         const b = boxRef.current!;
         scene.resize(b.clientWidth, b.clientHeight);
       };
       await new Promise((r) => requestAnimationFrame(r));
-      fit();
-      roRef.current = new ResizeObserver(fit);
+      fitScene();
+      roRef.current = new ResizeObserver(fitScene);
       roRef.current.observe(boxRef.current!);
 
       setStatus("running");
@@ -246,7 +242,7 @@ export default function TryOnView({
     }
   }
 
-  // Draw high-density geometric face wireframe matching the mirrored video alignment perfectly
+  // Draw the face wireframe, aligned with the mirrored video
   const drawFaceMeshHUD = (lm: NormalizedLandmark[], time: number) => {
     const canvas = hudCanvasRef.current;
     if (!canvas) return;
@@ -284,15 +280,9 @@ export default function TryOnView({
       const p1 = lm[i];
       const p2 = lm[j];
       if (p1 && p2) {
-        // Direct un-flipped screen mapping to align accurately over the video feed
-        const x1 = p1.x * W;
-        const y1 = p1.y * H;
-        const x2 = p2.x * W;
-        const y2 = p2.y * H;
-
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(p1.x * W, p1.y * H);
+        ctx.lineTo(p2.x * W, p2.y * H);
         ctx.stroke();
       }
     });
@@ -371,9 +361,8 @@ export default function TryOnView({
       if (scanned || Math.abs(yaw) > 12 || Math.abs(pitch) > 14 || q.mouthOpen > 0.045) return;
       samples.push({ length: q.length, forehead: q.forehead, jaw: q.jaw });
       if (samples.length % 3 === 0) skin.push(...skinPatches(video, lm, scratch));
-      
-      const progress = Math.min(1, samples.length / 25);
-      setScan(progress);
+
+      setScan(Math.min(1, samples.length / 25));
 
       if (samples.length >= 25 && skin.length >= 8) {
         scanned = true;
@@ -456,23 +445,18 @@ export default function TryOnView({
         </div>
       )}
 
-      {/* Video & 3D AR Scene Container (Flipped for mirror view) */}
+      {/* Video & 3D AR scene (flipped for a mirror view) */}
       <div className="absolute inset-0" style={{ transform: "scaleX(-1)" }}>
         <video ref={videoRef} playsInline muted className="absolute inset-0 h-full w-full object-fill" />
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 h-full w-full"
-          style={{ filter: "blur(0.4px)" }}
-        />
+        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ filter: "blur(0.4px)" }} />
       </div>
 
-      {/* Wireframe Mesh Canvas placed OUTSIDE the flipped container so it tracks facial landmarks 1:1 */}
+      {/* Wireframe canvas, flipped the same way so it lines up with the face */}
       <canvas
         ref={hudCanvasRef}
-        className="absolute inset-0 h-full w-full pointer-events-none z-20 scaleX(-1)"
+        className="pointer-events-none absolute inset-0 z-20 h-full w-full"
         style={{ transform: "scaleX(-1)" }}
       />
-
 
       {status !== "running" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center">

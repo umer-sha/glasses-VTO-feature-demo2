@@ -11,7 +11,15 @@ import { usePrefs } from "@/components/Providers";
 import AIStylistOverlay from "@/components/AIStylistOverlay";
 import type { Key } from "@/lib/i18n";
 
-const TryOnView = dynamic(() => import("@/components/TryOnView"), { ssr: false });
+const TryOnView = dynamic(() => import("@/components/TryOnView"), {
+  ssr: false,
+  // shown while the camera code downloads, so this area is never an empty gap
+  loading: () => (
+    <div className="mx-auto flex aspect-[4/3] w-full max-w-3xl items-center justify-center rounded-2xl bg-surface-2 text-sm text-muted">
+      Loading camera…
+    </div>
+  ),
+});
 
 function TryOnContent({ searchParams }: { searchParams: Promise<{ id?: string; color?: string }> }) {
   const params = use(searchParams);
@@ -38,7 +46,7 @@ function TryOnContent({ searchParams }: { searchParams: Promise<{ id?: string; c
   return (
     <main className="container-x py-6 md:py-10">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <h1 className="font-display text-3xl tracking-tight sm:text-4xl">{t("tryon.title")}</h1>
+        <h1 className="font-display text-3xl sm:text-4xl">{t("tryon.title")}</h1>
         <Link href="/cart" className="text-sm text-muted transition hover:text-fg">
           {t("nav.cart")} ({count})
         </Link>

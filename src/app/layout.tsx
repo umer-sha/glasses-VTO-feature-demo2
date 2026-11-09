@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
+  themeColor: "#f6f2eb"
 };
 
 // runs before the page paints, so there is no flash: light by default, remembers the visitor's choice
