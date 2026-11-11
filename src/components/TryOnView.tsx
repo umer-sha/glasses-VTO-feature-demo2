@@ -120,6 +120,7 @@ interface TryOnViewProps {
   onStarted?: () => void;
 }
 
+/** Fills its parent (the parent must be `relative` and have a size). The camera is fitted inside with no cropping. */
 export default function TryOnView({
   product,
   color,
@@ -129,6 +130,7 @@ export default function TryOnView({
   onStarted,
 }: TryOnViewProps) {
   const { t } = usePrefs();
+  const stageRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -141,10 +143,27 @@ export default function TryOnView({
   const [status, setStatus] = useState<"idle" | "loading" | "running" | "error">("idle");
   const [message, setMessage] = useState("");
   const [aspect, setAspect] = useState(4 / 3);
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const [faceMetrics, setFaceMetrics] = useState<{ shape: string; skinTone: string } | null>(null);
   const [scan, setScan] = useState(0);
   const [fitOpen, setFitOpen] = useState(false);
   const [fit, setFit] = useState<Record<FitKey, number>>(FIT_DEFAULTS);
+
+  // make the camera as big as the space allows, keeping the video's own shape
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const calc = () => {
+      const pw = el.clientWidth, ph = el.clientHeight;
+      if (!pw || !ph) return;
+      const w = Math.min(pw, ph * aspect);
+      setSize({ w: Math.round(w), h: Math.round(w / aspect) });
+    };
+    calc();
+    const ro = new ResizeObserver(calc);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [aspect]);
 
   useEffect(() => {
     try {
@@ -191,10 +210,15 @@ export default function TryOnView({
     setMessage("");
     stopRef.current = false;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      });
+      // phones held upright: ask for an upright, lower-resolution video (fills the screen, tracks faster)
+      const phone = window.matchMedia("(pointer: coarse)").matches;
+      const upright = phone && window.innerHeight > window.innerWidth;
+      const video_: MediaTrackConstraints = upright
+        ? { facingMode: "user", width: { ideal: 720 }, height: { ideal: 960 } }
+        : phone
+          ? { facingMode: "user", width: { ideal: 960 }, height: { ideal: 720 } }
+          : { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } };
+      const stream = await navigator.mediaDevices.getUserMedia({ video: video_, audio: false });
       streamRef.current = stream;
       const video = videoRef.current!;
       video.srcObject = stream;
@@ -227,7 +251,7 @@ export default function TryOnView({
         const b = boxRef.current!;
         scene.resize(b.clientWidth, b.clientHeight);
       };
-      await new Promise((r) => requestAnimationFrame(r));
+      await new Promise((r) => setTimeout(r, 60)); // let the box take its final size
       fitScene();
       roRef.current = new ResizeObserver(fitScene);
       roRef.current.observe(boxRef.current!);
@@ -390,89 +414,91 @@ export default function TryOnView({
   }
 
   return (
-    <div
-      ref={boxRef}
-      className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-neutral-800"
-      style={{ aspectRatio: aspect }}
-    >
-      {status === "running" && faceMetrics && (
-        <div className="absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
-          {t("tryon.shape")}: <span className="font-semibold text-emerald-400">{faceMetrics.shape}</span> {t("tryon.tone")}:{" "}
-          <span className="font-semibold text-amber-400">{faceMetrics.skinTone}</span>
-        </div>
-      )}
-      {status === "running" && !faceMetrics && (
-        <div className="absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
-          {t("tryon.look")} {Math.round(scan * 100)}%
-        </div>
-      )}
+    <div ref={stageRef} className="absolute inset-0 flex items-center justify-center bg-black">
+      <div
+        ref={boxRef}
+        className="relative overflow-hidden bg-neutral-900"
+        style={size ? { width: size.w, height: size.h } : { width: "100%", aspectRatio: aspect }}
+      >
+        {status === "running" && faceMetrics && (
+          <div className="absolute left-3 top-3 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
+            {t("tryon.shape")}: <span className="font-semibold text-emerald-400">{faceMetrics.shape}</span> {t("tryon.tone")}:{" "}
+            <span className="font-semibold text-amber-400">{faceMetrics.skinTone}</span>
+          </div>
+        )}
+        {status === "running" && !faceMetrics && (
+          <div className="absolute left-3 top-3 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md">
+            {t("tryon.look")} {Math.round(scan * 100)}%
+          </div>
+        )}
 
-      {status === "running" && (
-        <div className="absolute right-3 top-3 z-30 flex flex-col items-end gap-2">
-          <button
-            onClick={() => setFitOpen((o) => !o)}
-            className="rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md hover:bg-black/80"
-          >
-            ⚙ Fit
-          </button>
-          {fitOpen && (
-            <div className="w-56 rounded-xl border border-white/10 bg-black/75 p-3 text-[11px] text-white backdrop-blur-md">
-              {FIT_SLIDERS.map((s) => (
-                <label key={s.key} className="mb-2 block">
-                  <span className="flex justify-between text-neutral-300">
-                    {s.label}
-                    <span>{fit[s.key].toFixed(2)}</span>
-                  </span>
-                  <input
-                    type="range"
-                    min={s.min}
-                    max={s.max}
-                    step={s.step}
-                    value={fit[s.key]}
-                    onChange={(e) => setFitValue(s.key, parseFloat(e.target.value))}
-                    className="w-full"
-                  />
-                </label>
-              ))}
-              <button
-                onClick={() => (Object.keys(FIT_DEFAULTS) as FitKey[]).forEach((k) => setFitValue(k, FIT_DEFAULTS[k]))}
-                className="mt-1 text-neutral-400 underline hover:text-white"
-              >
-                Reset
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Video & 3D AR scene (flipped for a mirror view) */}
-      <div className="absolute inset-0" style={{ transform: "scaleX(-1)" }}>
-        <video ref={videoRef} playsInline muted className="absolute inset-0 h-full w-full object-fill" />
-        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" style={{ filter: "blur(0.4px)" }} />
-      </div>
-
-      {/* Wireframe canvas, flipped the same way so it lines up with the face */}
-      <canvas
-        ref={hudCanvasRef}
-        className="pointer-events-none absolute inset-0 z-20 h-full w-full"
-        style={{ transform: "scaleX(-1)" }}
-      />
-
-      {status !== "running" && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center">
-          {status === "loading" ? (
-            <p className="text-neutral-300">{t("tryon.starting")}</p>
-          ) : (
+        {status === "running" && (
+          <div className="absolute right-3 top-3 z-30 flex flex-col items-end gap-2">
             <button
-              onClick={start}
-              className="rounded-full bg-white px-8 py-4 font-medium text-neutral-950 transition hover:bg-neutral-200"
+              onClick={() => setFitOpen((o) => !o)}
+              className="rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md hover:bg-black/80"
             >
-              📷 {t("tryon.start")}
+              ⚙ Fit
             </button>
-          )}
-          {message && <p className="max-w-md text-sm text-red-400">{message}</p>}
+            {fitOpen && (
+              <div className="w-56 rounded-xl border border-white/10 bg-black/75 p-3 text-[11px] text-white backdrop-blur-md">
+                {FIT_SLIDERS.map((s) => (
+                  <label key={s.key} className="mb-2 block">
+                    <span className="flex justify-between text-neutral-300">
+                      {s.label}
+                      <span>{fit[s.key].toFixed(2)}</span>
+                    </span>
+                    <input
+                      type="range"
+                      min={s.min}
+                      max={s.max}
+                      step={s.step}
+                      value={fit[s.key]}
+                      onChange={(e) => setFitValue(s.key, parseFloat(e.target.value))}
+                      className="w-full"
+                    />
+                  </label>
+                ))}
+                <button
+                  onClick={() => (Object.keys(FIT_DEFAULTS) as FitKey[]).forEach((k) => setFitValue(k, FIT_DEFAULTS[k]))}
+                  className="mt-1 text-neutral-400 underline hover:text-white"
+                >
+                  Reset
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Video & 3D AR scene (flipped for a mirror view) */}
+        <div className="absolute inset-0" style={{ transform: "scaleX(-1)" }}>
+          <video ref={videoRef} playsInline muted className="absolute inset-0 h-full w-full object-fill" />
+          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
         </div>
-      )}
+
+        {/* Wireframe canvas, flipped the same way so it lines up with the face */}
+        <canvas
+          ref={hudCanvasRef}
+          className="pointer-events-none absolute inset-0 z-20 h-full w-full"
+          style={{ transform: "scaleX(-1)" }}
+        />
+
+        {status !== "running" && (
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center">
+            {status === "loading" ? (
+              <p className="text-neutral-300">{t("tryon.starting")}</p>
+            ) : (
+              <button
+                onClick={start}
+                className="rounded-full bg-white px-8 py-4 font-medium text-neutral-950 transition hover:bg-neutral-200"
+              >
+                📷 {t("tryon.start")}
+              </button>
+            )}
+            {message && <p className="max-w-md text-sm text-red-400">{message}</p>}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

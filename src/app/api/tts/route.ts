@@ -1,37 +1,44 @@
 // Turns the stylist's reply into natural speech with ElevenLabs, in any of the site's languages.
-// The API key stays on the server (.env.local), the browser only gets the audio back.
+// The API key stays on the server, the browser only gets the audio back.
 export const runtime = "nodejs";
 
-// A safety net for your credits: after this many characters in a day the site falls back to the
-// browser's own voice. Change it with ELEVENLABS_DAILY_CHARS in .env.local.
+// Safety net for your credits (per server instance). Change with ELEVENLABS_DAILY_CHARS.
 const DAILY_LIMIT = Number(process.env.ELEVENLABS_DAILY_CHARS || 8000);
 let day = "";
 let used = 0;
 
-// Warm, friendly default voice ("Sarah"). Change it with ELEVENLABS_VOICE_ID in .env.local,
-// or give one language its own voice with ELEVENLABS_VOICE_ID_UR / _AR / _ES / _FR / _EN.
-const DEFAULT_VOICE = "EXAVITQu4vr4xnSDxMaL";
+// "Jessica": bright and conversational. Change with ELEVENLABS_VOICE_ID, or per language with
+// ELEVENLABS_VOICE_ID_UR / _AR / _ES / _FR / _EN.
+const DEFAULT_VOICE = "cgSgspJ2msm6clMCkdW9";
+
+const FAST = process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5"; // quick replies, good for chatting
+const EXPRESSIVE = "eleven_v3"; // the one that covers Urdu
 
 function voiceFor(lang: string) {
   return process.env[`ELEVENLABS_VOICE_ID_${lang.toUpperCase()}`] || process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE;
 }
 
-async function synth(key: string, voice: string, text: string, withSettings: boolean) {
+async function synth(key: string, voice: string, text: string, model: string, withSettings: boolean) {
+  const settings =
+    model === EXPRESSIVE
+      ? { stability: 0.5 } // v3 only accepts 0, 0.5 or 1
+      : { stability: 0.42, similarity_boost: 0.8, style: 0.35, use_speaker_boost: true, speed: 1.05 };
   return fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`, {
     method: "POST",
     headers: { "xi-api-key": key, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      text,
-      model_id: "eleven_v3", // most expressive model, covers Urdu, Arabic, Spanish and French
-      ...(withSettings ? { voice_settings: { stability: 0.5 } } : {}), // v3: 0 creative, 0.5 natural, 1 robust
-    }),
+    body: JSON.stringify({ text, model_id: model, ...(withSettings ? { voice_settings: settings } : {}) }),
   });
 }
 
-async function synthWithRetry(key: string, voice: string, text: string) {
-  let r = await synth(key, voice, text, true);
-  // if ElevenLabs rejects the settings, try again with its own defaults
-  if (r.status === 400 || r.status === 422) r = await synth(key, voice, text, false);
+async function speak(key: string, voice: string, text: string, lang: string) {
+  // Urdu needs v3. Everything else uses the fast conversational model first, with v3 as the backup.
+  const models = lang === "ur" ? [EXPRESSIVE] : [FAST, EXPRESSIVE];
+  let r!: Response;
+  for (const model of models) {
+    r = await synth(key, voice, text, model, true);
+    if (r.status === 400 || r.status === 422) r = await synth(key, voice, text, model, false); // settings refused
+    if (r.ok || (r.status !== 400 && r.status !== 422)) break; // only try the next model on a "can't do that" error
+  }
   return r;
 }
 
@@ -63,22 +70,26 @@ export async function POST(req: Request) {
     return new Response(`Daily voice limit reached (${used}/${DAILY_LIMIT} characters)`, { status: 429 });
   }
 
-  const r = await synthWithRetry(key, voiceFor(lang), text);
+  const r = await speak(key, voiceFor(lang), text, lang);
   if (!r.ok) return new Response(await r.text(), { status: r.status });
-  used += text.length; // only count what ElevenLabs actually spoke
+  used += text.length;
 
   return new Response(r.body, { headers: { "Content-Type": "audio/mpeg", "Cache-Control": "no-store" } });
 }
 
-// Open http://localhost:3000/api/tts in the browser to see whether the voice works and, if not, why.
+// Open /api/tts in the browser to check the voice works (English and Urdu) and see the exact error if not.
 export async function GET() {
   const key = process.env.ELEVENLABS_API_KEY;
   today();
-  const info = { keyFound: !!key, usedToday: used, dailyLimit: DAILY_LIMIT, voice: voiceFor("ur") };
-  if (!key) return Response.json({ ...info, ok: false, problem: "ELEVENLABS_API_KEY is not set (check .env.local and restart npm run dev)" });
+  const info = { keyFound: !!key, usedToday: used, dailyLimit: DAILY_LIMIT, voice: voiceFor("en") };
+  if (!key) return Response.json({ ...info, ok: false, problem: "ELEVENLABS_API_KEY is not set on this server" });
 
-  const r = await synthWithRetry(key, voiceFor("ur"), "Test");
-  if (r.ok) return Response.json({ ...info, ok: true, message: "ElevenLabs is working" });
-  const detail = (await r.text()).slice(0, 500);
-  return Response.json({ ...info, ok: false, elevenLabsStatus: r.status, detail });
+  const en = await speak(key, voiceFor("en"), "Test", "en");
+  const ur = await speak(key, voiceFor("ur"), "Test", "ur");
+  return Response.json({
+    ...info,
+    ok: en.ok && ur.ok,
+    english: en.ok ? "working" : { status: en.status, detail: (await en.text()).slice(0, 300) },
+    urdu: ur.ok ? "working" : { status: ur.status, detail: (await ur.text()).slice(0, 300) },
+  });
 }

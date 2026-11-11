@@ -3,6 +3,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { FACE_INDICES, FACE_POSITIONS } from "@/lib/faceMesh";
 import type { Glasses } from "@/lib/glasses";
+import { createLiveEnvironment, type LiveEnv } from "@/lib/liveEnv";
+import { applyFinish, finishFor, makeLensMaterial } from "@/lib/finishes";
 
 // ===================== TWEAK THESE if the glasses sit wrong =====================
 // Units are centimetres on a real face (MediaPipe's "canonical face" space).
@@ -280,11 +282,16 @@ export class ARScene {
   private envTex: THREE.Texture | null = null;
 
   private lastSeen = -1;
-  private fu = new OneEuro(1.2, 20);
-  private fv = new OneEuro(1.2, 20);
-  private fd = new OneEuro(0.9, 0.1);
-  private fq = [0, 1, 2, 3].map(() => new OneEuro(1.8, 4));
+  // First number = smoothing while the head is still (higher = less lag, a bit more shake).
+  // Second = how fast it catches up when you move. Too shaky when still? lower the first numbers.
+  private fu = new OneEuro(1.2, 40);
+  private fv = new OneEuro(1.2, 40);
+  private fd = new OneEuro(1.0, 1.5);
+  private fq = [0, 1, 2, 3].map(() => new OneEuro(2.2, 10));
   private fs = new OneEuro(0.5, 0);
+  private videoTex: THREE.VideoTexture | null = null;
+  private live: LiveEnv | null = null;
+  private lensPhys: THREE.MeshPhysicalMaterial[] = [];
   private fade = {
     uHeadInv: { value: new THREE.Matrix4() },
     uFadeA: { value: TUNE.earZ },
@@ -388,6 +395,20 @@ export class ARScene {
     this.camera.updateProjectionMatrix();
   }
 
+   /** Draw the webcam INSIDE the 3D scene so the glasses and the face are always the same frame. */
+  attachVideo(video: HTMLVideoElement) {
+    this.videoTex = new THREE.VideoTexture(video);
+    this.videoTex.colorSpace = THREE.SRGBColorSpace;
+    this.videoTex.minFilter = THREE.LinearFilter;
+    this.videoTex.magFilter = THREE.LinearFilter;
+    this.videoTex.generateMipmaps = false;
+    this.scene.background = this.videoTex;
+    this.live = createLiveEnvironment(this.renderer, this.scene, video);
+    // glass refracts a half-size copy of the picture: much cheaper on phones, looks the same
+    const r = this.renderer as unknown as { transmissionResolutionScale?: number };
+    if ("transmissionResolutionScale" in r) r.transmissionResolutionScale = 0.5;
+  }
+
   setFov(fov: number) {
     TUNE.fov = fov;
     this.camera.fov = fov;
@@ -443,20 +464,13 @@ export class ARScene {
           m.map = null;
           m.color.set(color);
         }
-        if (metal) {
-          m.metalness = 0.95; m.roughness = 0.3; m.clearcoat = 0;
-        } else {
-          m.metalness = 0; m.roughness = 0.4; m.clearcoat = 0.5; m.clearcoatRoughness = 0.18;
-        }
+        applyFinish(m, finishFor(this.colorName, !!metal));
       } else {
+
         m.map = r.origMap;
         m.color.copy(r.origColor);
         if (tint) tint.uTintAmt.value = 0;
-        if (r.origMetal > 0.5) {
-          m.metalness = 0.95; m.roughness = Math.min(Math.max(r.origRough, 0.2), 0.4); m.clearcoat = 0;
-        } else {
-          m.metalness = 0; m.roughness = Math.min(Math.max(r.origRough, 0.3), 0.45); m.clearcoat = 0.5; m.clearcoatRoughness = 0.18;
-        }
+        applyFinish(m, r.origMetal > 0.5 ? "titanium" : "acetate");
       }
       m.needsUpdate = true;
     }
@@ -509,18 +523,10 @@ export class ARScene {
         }
         if (isLens(mat, lensExtra)) {
           lensMeshes.push(mesh);
-          const lensTex = (mat as THREE.MeshBasicMaterial).map;
-          const absorb = new THREE.MeshBasicMaterial({
-            color: lensTex ? new THREE.Color(0xffffff) : new THREE.Color(TUNE.lensColor),
-            map: lensTex ?? null,
-            transparent: true,
-            opacity: lensTex ? Math.min(0.9, TUNE.lensOpacity * 2.2) : TUNE.lensOpacity,
-            depthWrite: false,
-          });
-          absorb.userData.baked = !!lensTex;
-          materials.push(absorb);
-          lensMats.push(absorb);
-          return absorb;
+          const lens = makeLensMaterial(TUNE.lensColor, TUNE.width);
+          materials.push(lens);
+          this.lensPhys.push(lens);
+          return lens;
         }
         const std = toPhysical(mat as Std);
         const p = std === mat ? (mat.clone() as THREE.MeshPhysicalMaterial) : std;
@@ -600,9 +606,6 @@ export class ARScene {
     for (const lm of lensMeshes) {
       lm.castShadow = false;
       lm.renderOrder = 2;
-      const r = new THREE.Mesh(lm.geometry, refl);
-      r.renderOrder = 3;
-      lm.add(r);
     }
 
     const holder = new THREE.Group();
@@ -744,7 +747,8 @@ export class ARScene {
     this.anchor.visible = true;
   }
 
-  render() {
+   render() {
+    // keep tunables live
     this.glassesHolder.position.set(0, TUNE.y, TUNE.z);
     this.glassesHolder.rotation.x = TUNE.pitch;
     this.glassesHolder.scale.setScalar(TUNE.width);
@@ -765,7 +769,16 @@ export class ARScene {
       }
     }
 
+    if (this.videoTex) this.videoTex.needsUpdate = true; // draw the exact frame that was analysed
+    this.live?.update(performance.now());
+    for (const lens of this.lensPhys) {
+      // the "Lens tint" slider: darker tint = shorter attenuation distance
+      lens.attenuationColor.set(TUNE.lensColor);
+      lens.attenuationDistance = lens.thickness / Math.max(0.01, TUNE.lensOpacity * 0.8);
+    }
+
     if (this.anchor.visible) {
+      // room light stays fixed in the camera's world while the head moves under it
       const hp = this.tmp.p.setFromMatrixPosition(this.anchor.matrix);
       this.key.position.set(hp.x + 4, hp.y + 15, hp.z + 28);
       this.key.target.position.copy(hp);
@@ -778,6 +791,8 @@ export class ARScene {
     this.token++;
     this.built?.materials.forEach((m) => m.dispose());
     this.envTex?.dispose();
+    this.live?.dispose();
+    this.videoTex?.dispose();
     this.renderer.dispose();
   }
 }

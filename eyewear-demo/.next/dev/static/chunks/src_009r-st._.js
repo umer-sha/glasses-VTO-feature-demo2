@@ -1,735 +1,4 @@
 (globalThis["TURBOPACK"] || (globalThis["TURBOPACK"] = [])).push([typeof document === "object" ? document.currentScript : undefined,
-"[project]/src/components/AIStylistOverlay.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
-"use strict";
-
-__turbopack_context__.s([
-    "default",
-    ()=>AIStylistOverlay
-]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/glasses.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/cart.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/i18n.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/stylist.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Providers.tsx [app-client] (ecmascript)");
-;
-var _s = __turbopack_context__.k.signature();
-"use client";
-;
-;
-;
-;
-;
-;
-;
-/* eslint-disable @typescript-eslint/no-explicit-any */ function pickVoice(speech) {
-    if (("TURBOPACK compile-time value", "object") === "undefined" || !("speechSynthesis" in window)) return null;
-    const voices = window.speechSynthesis.getVoices();
-    const prefix = speech.split("-")[0].toLowerCase();
-    const same = voices.filter((v)=>v.lang.toLowerCase().replace("_", "-").startsWith(prefix));
-    if (!same.length) return null;
-    const score = (v)=>(v.lang.toLowerCase().replace("_", "-") === speech.toLowerCase() ? 3 : 0) + (/natural|neural|online|enhanced|premium/i.test(v.name) ? 4 : 0) + (/google/i.test(v.name) ? 2 : 0) + (v.localService ? 0 : 1);
-    return same.sort((a, b)=>score(b) - score(a))[0];
-}
-function AIStylistOverlay({ currentProduct, currentKey, currentColor, onSelectFrame, onSelectColor, faceMetrics, started = false }) {
-    _s();
-    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
-    const { t, lang, setLang, speechLang, toggleTheme, setTheme } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"])();
-    const example = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LANGS"].find((l)=>l.code === lang)?.example ?? "";
-    const scriptFont = lang === "ur" || lang === "ar" ? "script-font" : "";
-    const [listening, setListening] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [heard, setHeard] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [reply, setReply] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [typed, setTyped] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [supported, setSupported] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
-    const [note, setNote] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const wantRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false); // the user wants the mic on
-    const speakingRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
-    const recRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const audioRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const ttsOff = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false); // true once we know ElevenLabs isn't set up (then the browser voice is used straight away)
-    const cacheRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(new Map()); // sentences already spoken cost nothing the second time
-    const utterRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null); // keeps the sentence alive (Chrome can drop it otherwise)
-    const pendingRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const greetedRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
-    // always-fresh copies, so the speech callbacks never use stale values
-    const live = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])({
-        currentProduct,
-        currentKey,
-        currentColor,
-        faceMetrics,
-        lang,
-        speechLang
-    });
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            live.current = {
-                currentProduct,
-                currentKey,
-                currentColor,
-                faceMetrics,
-                lang,
-                speechLang
-            };
-        }
-    }["AIStylistOverlay.useEffect"]);
-    // ---------------- speaking ----------------
-    // Plan A: natural voice from ElevenLabs through /api/tts (speaks Urdu too).
-    // Plan B: the browser's own voice, if the key isn't set up or the request fails.
-    const speak = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AIStylistOverlay.useCallback[speak]": (text, speech)=>{
-            setReply(text);
-            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-            ;
-            const code = speech ?? live.current.speechLang;
-            // stop whatever is playing, and don't listen to ourselves while talking
-            audioRef.current?.pause();
-            if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-            speakingRef.current = true;
-            try {
-                recRef.current?.stop();
-            } catch  {}
-            const done = {
-                "AIStylistOverlay.useCallback[speak].done": ()=>{
-                    speakingRef.current = false;
-                    if (wantRef.current) setTimeout({
-                        "AIStylistOverlay.useCallback[speak].done": ()=>{
-                            try {
-                                recRef.current?.start();
-                            } catch  {}
-                        }
-                    }["AIStylistOverlay.useCallback[speak].done"], 200);
-                }
-            }["AIStylistOverlay.useCallback[speak].done"];
-            const browserVoice = {
-                "AIStylistOverlay.useCallback[speak].browserVoice": ()=>{
-                    if (!("speechSynthesis" in window)) return done();
-                    const synth = window.speechSynthesis;
-                    const u = new SpeechSynthesisUtterance(text);
-                    utterRef.current = u;
-                    u.lang = code;
-                    u.volume = 1;
-                    const v = pickVoice(code);
-                    if (v) u.voice = v;
-                    else if (synth.getVoices().length) {
-                        const name = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LANGS"].find({
-                            "AIStylistOverlay.useCallback[speak].browserVoice": (l)=>l.speech === code
-                        }["AIStylistOverlay.useCallback[speak].browserVoice"])?.label ?? code;
-                        setNote((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(live.current.lang, "voice.novoice", {
-                            lang: name
-                        }));
-                    }
-                    u.onend = done;
-                    u.onerror = done;
-                    setTimeout({
-                        "AIStylistOverlay.useCallback[speak].browserVoice": ()=>{
-                            synth.resume();
-                            synth.speak(u);
-                        }
-                    }["AIStylistOverlay.useCallback[speak].browserVoice"], 80);
-                }
-            }["AIStylistOverlay.useCallback[speak].browserVoice"];
-            const play = {
-                "AIStylistOverlay.useCallback[speak].play": (url)=>{
-                    const au = new Audio(url);
-                    audioRef.current = au;
-                    au.onended = done;
-                    au.onerror = ({
-                        "AIStylistOverlay.useCallback[speak].play": ()=>browserVoice()
-                    })["AIStylistOverlay.useCallback[speak].play"];
-                    return au.play();
-                }
-            }["AIStylistOverlay.useCallback[speak].play"];
-            const cached = cacheRef.current.get(text);
-            if (cached) {
-                play(cached).catch({
-                    "AIStylistOverlay.useCallback[speak]": ()=>browserVoice()
-                }["AIStylistOverlay.useCallback[speak]"]);
-                return;
-            }
-            if (ttsOff.current) {
-                browserVoice();
-                return;
-            }
-            fetch("/api/tts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    text
-                })
-            }).then({
-                "AIStylistOverlay.useCallback[speak]": (r)=>{
-                    if (!r.ok) {
-                        if (r.status === 501 || r.status === 401 || r.status === 403) ttsOff.current = true;
-                        throw new Error("tts " + r.status);
-                    }
-                    return r.blob();
-                }
-            }["AIStylistOverlay.useCallback[speak]"]).then({
-                "AIStylistOverlay.useCallback[speak]": (blob)=>{
-                    const url = URL.createObjectURL(blob);
-                    cacheRef.current.set(text, url);
-                    return play(url);
-                }
-            }["AIStylistOverlay.useCallback[speak]"]).catch({
-                "AIStylistOverlay.useCallback[speak]": (err)=>{
-                    setNote("Voice service error: " + String(err.message || err));
-                    browserVoice();
-                }
-            }["AIStylistOverlay.useCallback[speak]"]);
-        }
-    }["AIStylistOverlay.useCallback[speak]"], []);
-    const say = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AIStylistOverlay.useCallback[say]": (key, vars, l)=>{
-            const useLang = l ?? live.current.lang;
-            const code = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LANGS"].find({
-                "AIStylistOverlay.useCallback[say]": (x)=>x.code === useLang
-            }["AIStylistOverlay.useCallback[say]"])?.speech;
-            speak((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(useLang, key, vars), code);
-        }
-    }["AIStylistOverlay.useCallback[say]"], [
-        speak
-    ]);
-    // ---------------- doing what was asked ----------------
-    const act = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AIStylistOverlay.useCallback[act]": (text)=>{
-            const L = live.current;
-            const p = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["parse"])(text);
-            const vars = {
-                "AIStylistOverlay.useCallback[act].vars": ()=>({
-                        name: target.name,
-                        color: colorName
-                    })
-            }["AIStylistOverlay.useCallback[act].vars"];
-            let target = L.currentProduct;
-            let targetId = L.currentKey;
-            let colorName = L.currentColor;
-            if (p.lang) {
-                setLang(p.lang);
-                say("v.lang", undefined, p.lang);
-                return;
-            }
-            if (p.stop) {
-                stopListening();
-                say("v.stop");
-                return;
-            }
-            if (p.help) {
-                say("v.help");
-                return;
-            }
-            if (p.theme && !p.product && !p.add) {
-                setTheme(p.theme);
-                say(p.theme === "dark" ? "v.theme.dark" : "v.theme.light");
-                return;
-            }
-            let key = null;
-            // "yes" accepts the stylist's pick
-            if (p.yes && pendingRef.current && !p.product && !p.color) {
-                const r = pendingRef.current;
-                pendingRef.current = null;
-                onSelectFrame(r.id);
-                onSelectColor(r.colorName);
-                target = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][r.id];
-                targetId = r.id;
-                colorName = r.colorName;
-                say("v.switch", vars());
-                return;
-            }
-            // which frame / which colour
-            if (p.step) {
-                const i = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glassesList"].findIndex({
-                    "AIStylistOverlay.useCallback[act].i": (g)=>g.id === targetId
-                }["AIStylistOverlay.useCallback[act].i"]);
-                const n = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glassesList"][(i + p.step + __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glassesList"].length) % __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glassesList"].length];
-                target = n;
-                targetId = n.id;
-                colorName = n.colors[0].name;
-                onSelectFrame(n.id);
-                key = "v.switch";
-            }
-            if (p.product && __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][p.product]) {
-                target = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][p.product];
-                targetId = p.product;
-                colorName = target.colors[0].name;
-                onSelectFrame(p.product);
-                key = "v.switch";
-            }
-            if (p.color) {
-                const c = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["matchColor"])(target, p.color);
-                if (c) {
-                    colorName = c.name;
-                    onSelectColor(c.name);
-                    if (!key) key = "v.color";
-                } else {
-                    say("v.nocolor", {
-                        name: target.name,
-                        options: target.colors.map({
-                            "AIStylistOverlay.useCallback[act]": (x)=>x.name
-                        }["AIStylistOverlay.useCallback[act]"]).join(", ")
-                    });
-                    return;
-                }
-            }
-            if (p.recommend) {
-                if (!L.faceMetrics) {
-                    say("v.needscan");
-                    return;
-                }
-                const r = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["recommend"])(L.faceMetrics.shape, L.faceMetrics.skinTone);
-                pendingRef.current = r;
-                say("v.recommend", {
-                    name: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][r.id].name,
-                    color: r.colorName
-                });
-                return;
-            }
-            if (p.add) {
-                __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cart"].add(targetId, colorName, 1);
-                key = "v.added";
-            }
-            if (p.remove) {
-                __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cart"].removeProduct(targetId);
-                key = "v.removed";
-            }
-            if (p.checkout) {
-                if (__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cart"].size() === 0) {
-                    say("v.checkout.empty");
-                    return;
-                }
-                say("v.checkout");
-                setTimeout({
-                    "AIStylistOverlay.useCallback[act]": ()=>router.push("/checkout")
-                }["AIStylistOverlay.useCallback[act]"], 900);
-                return;
-            }
-            if (p.viewCart) {
-                say("v.cart");
-                setTimeout({
-                    "AIStylistOverlay.useCallback[act]": ()=>router.push("/cart")
-                }["AIStylistOverlay.useCallback[act]"], 700);
-                return;
-            }
-            if (p.home) {
-                say("v.home");
-                setTimeout({
-                    "AIStylistOverlay.useCallback[act]": ()=>router.push("/")
-                }["AIStylistOverlay.useCallback[act]"], 700);
-                return;
-            }
-            if (p.shop) {
-                say("v.shop");
-                setTimeout({
-                    "AIStylistOverlay.useCallback[act]": ()=>router.push("/#collection")
-                }["AIStylistOverlay.useCallback[act]"], 700);
-                return;
-            }
-            if (p.tryon && !key) {
-                say("v.camera");
-                return;
-            }
-            if (p.price && !key) {
-                say("v.price", {
-                    name: target.name,
-                    price: `$${target.price}`
-                });
-                return;
-            }
-            if (key) {
-                say(key, vars());
-                return;
-            }
-            if (p.theme) {
-                toggleTheme();
-                return;
-            }
-            say("v.unknown");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }
-    }["AIStylistOverlay.useCallback[act]"], [
-        onSelectFrame,
-        onSelectColor,
-        router,
-        say,
-        setLang,
-        setTheme,
-        toggleTheme
-    ]);
-    const actRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(act);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            actRef.current = act;
-        }
-    }["AIStylistOverlay.useEffect"]);
-    // ---------------- microphone ----------------
-    function stopListening() {
-        wantRef.current = false;
-        setListening(false);
-        try {
-            recRef.current?.stop();
-        } catch  {}
-    }
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SR) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                setSupported(false);
-                return;
-            }
-            const rec = new SR();
-            rec.lang = speechLang;
-            rec.continuous = true;
-            rec.interimResults = true;
-            rec.maxAlternatives = 3;
-            rec.onresult = ({
-                "AIStylistOverlay.useEffect": (e)=>{
-                    for(let i = e.resultIndex; i < e.results.length; i++){
-                        const r = e.results[i];
-                        const said = r[0].transcript.trim();
-                        setHeard(said);
-                        if (!r.isFinal) continue;
-                        // try the alternatives too: speech engines often put the right word second
-                        const alts = [];
-                        for(let k = 0; k < r.length; k++)alts.push(r[k].transcript);
-                        const best = alts.find({
-                            "AIStylistOverlay.useEffect": (a)=>Object.keys((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["parse"])(a)).length > 0
-                        }["AIStylistOverlay.useEffect"]) ?? said;
-                        actRef.current(best);
-                    }
-                }
-            })["AIStylistOverlay.useEffect"];
-            rec.onerror = ({
-                "AIStylistOverlay.useEffect": (e)=>{
-                    if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-                        wantRef.current = false;
-                        setListening(false);
-                        setNote((0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(live.current.lang, "voice.denied"));
-                    }
-                }
-            })["AIStylistOverlay.useEffect"];
-            rec.onend = ({
-                "AIStylistOverlay.useEffect": ()=>{
-                    // Chrome ends the session after a pause: quietly start it again while the mic is "on"
-                    if (wantRef.current && !speakingRef.current) setTimeout({
-                        "AIStylistOverlay.useEffect": ()=>{
-                            try {
-                                rec.start();
-                            } catch  {}
-                        }
-                    }["AIStylistOverlay.useEffect"], 250);
-                }
-            })["AIStylistOverlay.useEffect"];
-            recRef.current = rec;
-            if (wantRef.current && !speakingRef.current) {
-                try {
-                    rec.start();
-                } catch  {}
-            }
-            return ({
-                "AIStylistOverlay.useEffect": ()=>{
-                    rec.onend = null;
-                    rec.onresult = null;
-                    try {
-                        rec.stop();
-                    } catch  {}
-                }
-            })["AIStylistOverlay.useEffect"];
-        }
-    }["AIStylistOverlay.useEffect"], [
-        speechLang
-    ]);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>({
-                "AIStylistOverlay.useEffect": ()=>{
-                    wantRef.current = false;
-                    audioRef.current?.pause();
-                }
-            })["AIStylistOverlay.useEffect"]
-    }["AIStylistOverlay.useEffect"], []);
-    function toggleMic() {
-        if (listening) {
-            stopListening();
-            return;
-        }
-        wantRef.current = true;
-        setListening(true);
-        setNote("");
-        setHeard("");
-        try {
-            recRef.current?.start();
-        } catch  {}
-    }
-    // ---------------- the stylist introduces itself when the live camera starts ----------------
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            if (!started || greetedRef.current) return;
-            greetedRef.current = true;
-            say("v.intro");
-        }
-    }["AIStylistOverlay.useEffect"], [
-        started,
-        say
-    ]);
-    // ---------------- tell the user the result when the face scan finishes ----------------
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            if (!faceMetrics) return;
-            const r = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["recommend"])(faceMetrics.shape, faceMetrics.skinTone);
-            pendingRef.current = r;
-            const tone = /warm/i.test(faceMetrics.skinTone) ? "warm" : /cool/i.test(faceMetrics.skinTone) ? "cool" : "neutral";
-            let tries = 0;
-            let timer;
-            const talk = {
-                "AIStylistOverlay.useEffect.talk": ()=>{
-                    // wait until the introduction has finished
-                    if (speakingRef.current && tries++ < 80) {
-                        timer = setTimeout(talk, 500);
-                        return;
-                    }
-                    const L = live.current.lang;
-                    say("v.scan", {
-                        shape: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(L, `shape.${faceMetrics.shape}`),
-                        tone: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["translate"])(L, `tone.${tone}`),
-                        name: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][r.id].name,
-                        color: r.colorName
-                    });
-                }
-            }["AIStylistOverlay.useEffect.talk"];
-            timer = setTimeout(talk, 400);
-            return ({
-                "AIStylistOverlay.useEffect": ()=>clearTimeout(timer)
-            })["AIStylistOverlay.useEffect"];
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }
-    }["AIStylistOverlay.useEffect"], [
-        faceMetrics
-    ]);
-    // changing the voice language: confirm in the new language
-    const prevLang = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(lang);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            if (prevLang.current === lang) return;
-            prevLang.current = lang;
-            say("v.lang");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }
-    }["AIStylistOverlay.useEffect"], [
-        lang
-    ]);
-    // voices load late on some browsers
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "AIStylistOverlay.useEffect": ()=>{
-            if (!("speechSynthesis" in window)) return;
-            const f = {
-                "AIStylistOverlay.useEffect.f": ()=>window.speechSynthesis.getVoices()
-            }["AIStylistOverlay.useEffect.f"];
-            window.speechSynthesis.addEventListener?.("voiceschanged", f);
-            f();
-            return ({
-                "AIStylistOverlay.useEffect": ()=>window.speechSynthesis.removeEventListener?.("voiceschanged", f)
-            })["AIStylistOverlay.useEffect"];
-        }
-    }["AIStylistOverlay.useEffect"], []);
-    function submitTyped(e) {
-        e.preventDefault();
-        const v = typed.trim();
-        if (!v) return;
-        setHeard(v);
-        setTyped("");
-        actRef.current(v);
-    }
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-        className: "card p-4 sm:p-5",
-        children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-start gap-4",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: toggleMic,
-                        "aria-pressed": listening,
-                        "aria-label": t("voice.mic"),
-                        title: t("voice.mic"),
-                        className: `relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition ${listening ? "bg-danger text-white" : "bg-accent text-accent-fg hover:opacity-90"}`,
-                        children: [
-                            listening && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "absolute inset-0 animate-ping rounded-full bg-danger/40"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 383,
-                                columnNumber: 25
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                                className: "relative",
-                                width: "22",
-                                height: "22",
-                                viewBox: "0 0 24 24",
-                                fill: "none",
-                                stroke: "currentColor",
-                                strokeWidth: "2",
-                                strokeLinecap: "round",
-                                strokeLinejoin: "round",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
-                                        x: "9",
-                                        y: "3",
-                                        width: "6",
-                                        height: "11",
-                                        rx: "3"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                        lineNumber: 385,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
-                                        d: "M5 11a7 7 0 0 0 14 0M12 18v3"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                        lineNumber: 386,
-                                        columnNumber: 13
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 384,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 374,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "min-w-0 flex-1",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-accent",
-                                children: t("voice.title")
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 391,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                dir: reply ? "auto" : undefined,
-                                className: `mt-1 text-base leading-snug ${reply ? scriptFont : ""}`,
-                                children: reply || (listening ? t("voice.listening") : t("voice.idle"))
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 392,
-                                columnNumber: 11
-                            }, this),
-                            heard && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                dir: "auto",
-                                className: "mt-1.5 truncate text-sm text-muted",
-                                children: [
-                                    t("voice.heard"),
-                                    ": “",
-                                    heard,
-                                    "”"
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 396,
-                                columnNumber: 13
-                            }, this),
-                            !reply && !heard && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "mt-1.5 text-sm text-muted",
-                                children: [
-                                    t("voice.try"),
-                                    ": “",
-                                    example,
-                                    "”"
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 400,
-                                columnNumber: 32
-                            }, this),
-                            !supported && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "mt-1.5 text-sm text-danger",
-                                children: t("voice.unsupported")
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 401,
-                                columnNumber: 26
-                            }, this),
-                            note && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "mt-1.5 text-sm text-danger",
-                                children: note
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                                lineNumber: 402,
-                                columnNumber: 20
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 390,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                lineNumber: 373,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                onSubmit: submitTyped,
-                className: "mt-4 flex gap-2",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                        value: typed,
-                        onChange: (e)=>setTyped(e.target.value),
-                        placeholder: `${t("voice.type")}, e.g. ${example}`,
-                        dir: "auto",
-                        "aria-label": t("voice.type"),
-                        className: "input min-w-0 flex-1 !rounded-full"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 407,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        type: "submit",
-                        className: "btn btn-ghost",
-                        children: t("voice.send")
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                        lineNumber: 415,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/AIStylistOverlay.tsx",
-                lineNumber: 406,
-                columnNumber: 7
-            }, this)
-        ]
-    }, void 0, true, {
-        fileName: "[project]/src/components/AIStylistOverlay.tsx",
-        lineNumber: 372,
-        columnNumber: 5
-    }, this);
-}
-_s(AIStylistOverlay, "Wxh1zP78QiTBhqRH+t341b12Lfs=", false, function() {
-    return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
-        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"]
-    ];
-});
-_c = AIStylistOverlay;
-var _c;
-__turbopack_context__.k.register(_c, "AIStylistOverlay");
-if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
-    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
-}
-}),
 "[project]/src/components/TryOnView.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
@@ -742,7 +11,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/three/build/three.core.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mediapipe$2f$tasks$2d$vision$2f$vision_bundle$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@mediapipe/tasks-vision/vision_bundle.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$arScene$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/arScene.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AIStylistOverlay$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/AIStylistOverlay.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Providers.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
@@ -756,7 +24,6 @@ if (("TURBOPACK compile-time value", "object") !== "undefined" && !window.__xnn)
         originalError(...args);
     };
 }
-;
 ;
 ;
 ;
@@ -896,9 +163,10 @@ const FIT_SLIDERS = [
         step: 0.01
     }
 ];
-function TryOnView({ product, color, productKey, currentColorName, onSelectFrame, onSelectColor, onFaceScanned }) {
+function TryOnView({ product, color, productKey, currentColorName, onFaceScanned, onStarted }) {
     _s();
     const { t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"])();
+    const stageRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const boxRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const videoRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const canvasRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
@@ -911,10 +179,37 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
     const [status, setStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("idle");
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [aspect, setAspect] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(4 / 3);
+    const [size, setSize] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [faceMetrics, setFaceMetrics] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [scan, setScan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const [fitOpen, setFitOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [fit, setFit] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(FIT_DEFAULTS);
+    // make the camera as big as the space allows, keeping the video's own shape
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "TryOnView.useEffect": ()=>{
+            const el = stageRef.current;
+            if (!el) return;
+            const calc = {
+                "TryOnView.useEffect.calc": ()=>{
+                    const pw = el.clientWidth, ph = el.clientHeight;
+                    if (!pw || !ph) return;
+                    const w = Math.min(pw, ph * aspect);
+                    setSize({
+                        w: Math.round(w),
+                        h: Math.round(w / aspect)
+                    });
+                }
+            }["TryOnView.useEffect.calc"];
+            calc();
+            const ro = new ResizeObserver(calc);
+            ro.observe(el);
+            return ({
+                "TryOnView.useEffect": ()=>ro.disconnect()
+            })["TryOnView.useEffect"];
+        }
+    }["TryOnView.useEffect"], [
+        aspect
+    ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "TryOnView.useEffect": ()=>{
             try {
@@ -982,16 +277,36 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
         setMessage("");
         stopRef.current = false;
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: "user",
-                    width: {
-                        ideal: 1280
-                    },
-                    height: {
-                        ideal: 720
-                    }
+            // phones held upright: ask for an upright, lower-resolution video (fills the screen, tracks faster)
+            const phone = window.matchMedia("(pointer: coarse)").matches;
+            const upright = phone && window.innerHeight > window.innerWidth;
+            const video_ = upright ? {
+                facingMode: "user",
+                width: {
+                    ideal: 720
                 },
+                height: {
+                    ideal: 960
+                }
+            } : phone ? {
+                facingMode: "user",
+                width: {
+                    ideal: 960
+                },
+                height: {
+                    ideal: 720
+                }
+            } : {
+                facingMode: "user",
+                width: {
+                    ideal: 1280
+                },
+                height: {
+                    ideal: 720
+                }
+            };
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: video_,
                 audio: false
             });
             streamRef.current = stream;
@@ -1021,15 +336,16 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             }
             const scene = new __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$arScene$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ARScene"](canvasRef.current);
             sceneRef.current = scene;
-            const fit = ()=>{
+            const fitScene = ()=>{
                 const b = boxRef.current;
                 scene.resize(b.clientWidth, b.clientHeight);
             };
-            await new Promise((r)=>requestAnimationFrame(r));
-            fit();
-            roRef.current = new ResizeObserver(fit);
+            await new Promise((r)=>setTimeout(r, 60)); // let the box take its final size
+            fitScene();
+            roRef.current = new ResizeObserver(fitScene);
             roRef.current.observe(boxRef.current);
             setStatus("running");
+            onStarted?.();
             runLoop(video, landmarkerRef.current, scene);
         } catch (e) {
             setStatus("error");
@@ -1037,7 +353,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             console.error(e);
         }
     }
-    // Draw high-density geometric face wireframe matching the mirrored video alignment perfectly
+    // Draw the face wireframe, aligned with the mirrored video
     const drawFaceMeshHUD = (lm, time)=>{
         const canvas = hudCanvasRef.current;
         if (!canvas) return;
@@ -1769,13 +1085,9 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
             const p1 = lm[i];
             const p2 = lm[j];
             if (p1 && p2) {
-                const x1 = p1.x * W;
-                const y1 = p1.y * H;
-                const x2 = p2.x * W;
-                const y2 = p2.y * H;
                 ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
+                ctx.moveTo(p1.x * W, p1.y * H);
+                ctx.lineTo(p2.x * W, p2.y * H);
                 ctx.stroke();
             }
         });
@@ -1873,8 +1185,7 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
                 jaw: q.jaw
             });
             if (samples.length % 3 === 0) skin.push(...skinPatches(video, lm, scratch));
-            const progress = Math.min(1, samples.length / 25);
-            setScan(progress);
+            setScan(Math.min(1, samples.length / 25));
             if (samples.length >= 25 && skin.length >= 8) {
                 scanned = true;
                 const metrics = {
@@ -1897,231 +1208,228 @@ function TryOnView({ product, color, productKey, currentColorName, onSelectFrame
         schedule();
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        ref: boxRef,
-        className: "relative mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-neutral-800",
-        style: {
-            aspectRatio: aspect
-        },
-        children: [
-            status === "running" && faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md",
-                children: [
-                    t("tryon.shape"),
-                    ": ",
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                        className: "font-semibold text-emerald-400",
-                        children: faceMetrics.shape
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 408,
-                        columnNumber: 31
-                    }, this),
-                    " ",
-                    t("tryon.look"),
-                    " ",
-                    Math.round(scan * 100),
-                    "%",
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                        className: "font-semibold text-amber-400",
-                        children: faceMetrics.skinTone
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 409,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 407,
-                columnNumber: 9
-            }, this),
-            status === "running" && !faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute left-4 top-4 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md",
-                children: [
-                    "Look straight at the camera… ",
-                    Math.round(scan * 100),
-                    "%"
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 413,
-                columnNumber: 9
-            }, this),
-            status === "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute right-3 top-3 z-30 flex flex-col items-end gap-2",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: ()=>setFitOpen((o)=>!o),
-                        className: "rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md hover:bg-black/80",
-                        children: "⚙ Fit"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 420,
-                        columnNumber: 11
-                    }, this),
-                    fitOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "w-56 rounded-xl border border-white/10 bg-black/75 p-3 text-[11px] text-white backdrop-blur-md",
-                        children: [
-                            FIT_SLIDERS.map((s)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                    className: "mb-2 block",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "flex justify-between text-neutral-300",
-                                            children: [
-                                                s.label,
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    children: fit[s.key].toFixed(2)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/components/TryOnView.tsx",
-                                                    lineNumber: 432,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/components/TryOnView.tsx",
-                                            lineNumber: 430,
-                                            columnNumber: 19
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                            type: "range",
-                                            min: s.min,
-                                            max: s.max,
-                                            step: s.step,
-                                            value: fit[s.key],
-                                            onChange: (e)=>setFitValue(s.key, parseFloat(e.target.value)),
-                                            className: "w-full"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/components/TryOnView.tsx",
-                                            lineNumber: 434,
-                                            columnNumber: 19
-                                        }, this)
-                                    ]
-                                }, s.key, true, {
+        ref: stageRef,
+        className: "absolute inset-0 flex items-center justify-center bg-black",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            ref: boxRef,
+            className: "relative overflow-hidden bg-neutral-900",
+            style: size ? {
+                width: size.w,
+                height: size.h
+            } : {
+                width: "100%",
+                aspectRatio: aspect
+            },
+            children: [
+                status === "running" && faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute left-3 top-3 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md",
+                    children: [
+                        t("tryon.shape"),
+                        ": ",
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            className: "font-semibold text-emerald-400",
+                            children: faceMetrics.shape
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 425,
+                            columnNumber: 33
+                        }, this),
+                        " ",
+                        t("tryon.tone"),
+                        ":",
+                        " ",
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            className: "font-semibold text-amber-400",
+                            children: faceMetrics.skinTone
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 426,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 424,
+                    columnNumber: 11
+                }, this),
+                status === "running" && !faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute left-3 top-3 z-20 rounded-lg border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md",
+                    children: [
+                        t("tryon.look"),
+                        " ",
+                        Math.round(scan * 100),
+                        "%"
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 430,
+                    columnNumber: 11
+                }, this),
+                status === "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute right-3 top-3 z-30 flex flex-col items-end gap-2",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>setFitOpen((o)=>!o),
+                            className: "rounded-full border border-white/10 bg-black/60 px-3 py-1.5 text-[11px] text-white backdrop-blur-md hover:bg-black/80",
+                            children: "⚙ Fit"
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 437,
+                            columnNumber: 13
+                        }, this),
+                        fitOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "w-56 rounded-xl border border-white/10 bg-black/75 p-3 text-[11px] text-white backdrop-blur-md",
+                            children: [
+                                FIT_SLIDERS.map((s)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "mb-2 block",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "flex justify-between text-neutral-300",
+                                                children: [
+                                                    s.label,
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        children: fit[s.key].toFixed(2)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/components/TryOnView.tsx",
+                                                        lineNumber: 449,
+                                                        columnNumber: 23
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/components/TryOnView.tsx",
+                                                lineNumber: 447,
+                                                columnNumber: 21
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "range",
+                                                min: s.min,
+                                                max: s.max,
+                                                step: s.step,
+                                                value: fit[s.key],
+                                                onChange: (e)=>setFitValue(s.key, parseFloat(e.target.value)),
+                                                className: "w-full"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/TryOnView.tsx",
+                                                lineNumber: 451,
+                                                columnNumber: 21
+                                            }, this)
+                                        ]
+                                    }, s.key, true, {
+                                        fileName: "[project]/src/components/TryOnView.tsx",
+                                        lineNumber: 446,
+                                        columnNumber: 19
+                                    }, this)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>Object.keys(FIT_DEFAULTS).forEach((k)=>setFitValue(k, FIT_DEFAULTS[k])),
+                                    className: "mt-1 text-neutral-400 underline hover:text-white",
+                                    children: "Reset"
+                                }, void 0, false, {
                                     fileName: "[project]/src/components/TryOnView.tsx",
-                                    lineNumber: 429,
+                                    lineNumber: 462,
                                     columnNumber: 17
-                                }, this)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>Object.keys(FIT_DEFAULTS).forEach((k)=>setFitValue(k, FIT_DEFAULTS[k])),
-                                className: "mt-1 text-neutral-400 underline hover:text-white",
-                                children: "Reset"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/TryOnView.tsx",
-                                lineNumber: 445,
-                                columnNumber: 15
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 427,
-                        columnNumber: 13
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 419,
-                columnNumber: 9
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute inset-0",
-                style: {
-                    transform: "scaleX(-1)"
-                },
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
-                        ref: videoRef,
-                        playsInline: true,
-                        muted: true,
-                        className: "absolute inset-0 h-full w-full object-fill"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 458,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
-                        ref: canvasRef,
-                        className: "absolute inset-0 h-full w-full",
-                        style: {
-                            filter: "blur(0.4px)"
-                        }
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 459,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 457,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
-                ref: hudCanvasRef,
-                className: "absolute inset-0 h-full w-full pointer-events-none z-20",
-                style: {
-                    transform: "scaleX(-1)"
-                }
-            }, void 0, false, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 467,
-                columnNumber: 7
-            }, this),
-            status === "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AIStylistOverlay$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                currentProduct: product,
-                currentKey: productKey,
-                currentColor: currentColorName,
-                onSelectFrame: onSelectFrame,
-                onSelectColor: onSelectColor,
-                faceMetrics: faceMetrics
-            }, void 0, false, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 474,
-                columnNumber: 9
-            }, this),
-            status !== "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center",
-                children: [
-                    status === "loading" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "text-neutral-300",
-                        children: t("tryon.starting")
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 487,
-                        columnNumber: 13
-                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: start,
-                        className: "rounded-full bg-white px-8 py-4 font-medium text-neutral-950 transition hover:bg-neutral-200",
-                        children: [
-                            "📷 ",
-                            t("tryon.start")
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 489,
-                        columnNumber: 13
-                    }, this),
-                    message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "max-w-md text-sm text-red-400",
-                        children: message
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/TryOnView.tsx",
-                        lineNumber: 496,
-                        columnNumber: 23
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/TryOnView.tsx",
-                lineNumber: 485,
-                columnNumber: 9
-            }, this)
-        ]
-    }, void 0, true, {
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 444,
+                            columnNumber: 15
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 436,
+                    columnNumber: 11
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute inset-0",
+                    style: {
+                        transform: "scaleX(-1)"
+                    },
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
+                            ref: videoRef,
+                            playsInline: true,
+                            muted: true,
+                            className: "absolute inset-0 h-full w-full object-fill"
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 475,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
+                            ref: canvasRef,
+                            className: "absolute inset-0 h-full w-full"
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 476,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 474,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("canvas", {
+                    ref: hudCanvasRef,
+                    className: "pointer-events-none absolute inset-0 z-20 h-full w-full",
+                    style: {
+                        transform: "scaleX(-1)"
+                    }
+                }, void 0, false, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 480,
+                    columnNumber: 9
+                }, this),
+                status !== "running" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 bg-neutral-900/80 p-6 text-center",
+                    children: [
+                        status === "loading" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-neutral-300",
+                            children: t("tryon.starting")
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 489,
+                            columnNumber: 15
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: start,
+                            className: "rounded-full bg-white px-8 py-4 font-medium text-neutral-950 transition hover:bg-neutral-200",
+                            children: [
+                                "📷 ",
+                                t("tryon.start")
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 491,
+                            columnNumber: 15
+                        }, this),
+                        message && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "max-w-md text-sm text-red-400",
+                            children: message
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/TryOnView.tsx",
+                            lineNumber: 498,
+                            columnNumber: 25
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/components/TryOnView.tsx",
+                    lineNumber: 487,
+                    columnNumber: 11
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/components/TryOnView.tsx",
+            lineNumber: 418,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
         fileName: "[project]/src/components/TryOnView.tsx",
-        lineNumber: 401,
+        lineNumber: 417,
         columnNumber: 5
     }, this);
 }
-_s(TryOnView, "oJ+izVqnoJDJ850p9S7MXvP+ROY=", false, function() {
+_s(TryOnView, "win/CpTdgO8q9EMhfMJLjJlB/z0=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"]
     ];
@@ -2150,6 +1458,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$bui
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$examples$2f$jsm$2f$loaders$2f$GLTFLoader$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/three/examples/jsm/loaders/GLTFLoader.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$examples$2f$jsm$2f$environments$2f$RoomEnvironment$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/three/examples/jsm/environments/RoomEnvironment.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$faceMesh$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/faceMesh.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$liveEnv$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/liveEnv.ts [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$finishes$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/finishes.ts [app-client] (ecmascript)");
+;
+;
 ;
 ;
 ;
@@ -2452,16 +1764,21 @@ class ARScene {
     token = 0;
     envTex = null;
     lastSeen = -1;
-    fu = new OneEuro(1.2, 20);
-    fv = new OneEuro(1.2, 20);
-    fd = new OneEuro(0.9, 0.1);
+    // First number = smoothing while the head is still (higher = less lag, a bit more shake).
+    // Second = how fast it catches up when you move. Too shaky when still? lower the first numbers.
+    fu = new OneEuro(1.2, 40);
+    fv = new OneEuro(1.2, 40);
+    fd = new OneEuro(1.0, 1.5);
     fq = [
         0,
         1,
         2,
         3
-    ].map(()=>new OneEuro(1.8, 4));
+    ].map(()=>new OneEuro(2.2, 10));
     fs = new OneEuro(0.5, 0);
+    videoTex = null;
+    live = null;
+    lensPhys = [];
     fade = {
         uHeadInv: {
             value: new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Matrix4()
@@ -2570,6 +1887,18 @@ class ARScene {
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
     }
+    /** Draw the webcam INSIDE the 3D scene so the glasses and the face are always the same frame. */ attachVideo(video) {
+        this.videoTex = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.VideoTexture(video);
+        this.videoTex.colorSpace = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.SRGBColorSpace;
+        this.videoTex.minFilter = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.LinearFilter;
+        this.videoTex.magFilter = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.LinearFilter;
+        this.videoTex.generateMipmaps = false;
+        this.scene.background = this.videoTex;
+        this.live = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$liveEnv$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createLiveEnvironment"])(this.renderer, this.scene, video);
+        // glass refracts a half-size copy of the picture: much cheaper on phones, looks the same
+        const r = this.renderer;
+        if ("transmissionResolutionScale" in r) r.transmissionResolutionScale = 0.5;
+    }
     setFov(fov) {
         TUNE.fov = fov;
         this.camera.fov = fov;
@@ -2621,30 +1950,12 @@ class ARScene {
                     m.map = null;
                     m.color.set(color);
                 }
-                if (metal) {
-                    m.metalness = 0.95;
-                    m.roughness = 0.3;
-                    m.clearcoat = 0;
-                } else {
-                    m.metalness = 0;
-                    m.roughness = 0.4;
-                    m.clearcoat = 0.5;
-                    m.clearcoatRoughness = 0.18;
-                }
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$finishes$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["applyFinish"])(m, (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$finishes$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["finishFor"])(this.colorName, !!metal));
             } else {
                 m.map = r.origMap;
                 m.color.copy(r.origColor);
                 if (tint) tint.uTintAmt.value = 0;
-                if (r.origMetal > 0.5) {
-                    m.metalness = 0.95;
-                    m.roughness = Math.min(Math.max(r.origRough, 0.2), 0.4);
-                    m.clearcoat = 0;
-                } else {
-                    m.metalness = 0;
-                    m.roughness = Math.min(Math.max(r.origRough, 0.3), 0.45);
-                    m.clearcoat = 0.5;
-                    m.clearcoatRoughness = 0.18;
-                }
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$finishes$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["applyFinish"])(m, r.origMetal > 0.5 ? "titanium" : "acetate");
             }
             m.needsUpdate = true;
         }
@@ -2695,18 +2006,10 @@ class ARScene {
                 }
                 if (isLens(mat, lensExtra)) {
                     lensMeshes.push(mesh);
-                    const lensTex = mat.map;
-                    const absorb = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.MeshBasicMaterial({
-                        color: lensTex ? new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Color(0xffffff) : new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Color(TUNE.lensColor),
-                        map: lensTex ?? null,
-                        transparent: true,
-                        opacity: lensTex ? Math.min(0.9, TUNE.lensOpacity * 2.2) : TUNE.lensOpacity,
-                        depthWrite: false
-                    });
-                    absorb.userData.baked = !!lensTex;
-                    materials.push(absorb);
-                    lensMats.push(absorb);
-                    return absorb;
+                    const lens = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$finishes$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["makeLensMaterial"])(TUNE.lensColor, TUNE.width);
+                    materials.push(lens);
+                    this.lensPhys.push(lens);
+                    return lens;
                 }
                 const std = toPhysical(mat);
                 const p = std === mat ? mat.clone() : std;
@@ -2789,9 +2092,6 @@ class ARScene {
         for (const lm of lensMeshes){
             lm.castShadow = false;
             lm.renderOrder = 2;
-            const r = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Mesh(lm.geometry, refl);
-            r.renderOrder = 3;
-            lm.add(r);
         }
         const holder = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__.Group();
         holder.rotation.y = product.turn ?? 0;
@@ -2931,6 +2231,7 @@ class ARScene {
         this.anchor.visible = true;
     }
     render() {
+        // keep tunables live
         this.glassesHolder.position.set(0, TUNE.y, TUNE.z);
         this.glassesHolder.rotation.x = TUNE.pitch;
         this.glassesHolder.scale.setScalar(TUNE.width);
@@ -2950,7 +2251,15 @@ class ARScene {
                 }
             }
         }
+        if (this.videoTex) this.videoTex.needsUpdate = true; // draw the exact frame that was analysed
+        this.live?.update(performance.now());
+        for (const lens of this.lensPhys){
+            // the "Lens tint" slider: darker tint = shorter attenuation distance
+            lens.attenuationColor.set(TUNE.lensColor);
+            lens.attenuationDistance = lens.thickness / Math.max(0.01, TUNE.lensOpacity * 0.8);
+        }
         if (this.anchor.visible) {
+            // room light stays fixed in the camera's world while the head moves under it
             const hp = this.tmp.p.setFromMatrixPosition(this.anchor.matrix);
             this.key.position.set(hp.x + 4, hp.y + 15, hp.z + 28);
             this.key.target.position.copy(hp);
@@ -2962,6 +2271,8 @@ class ARScene {
         this.token++;
         this.built?.materials.forEach((m)=>m.dispose());
         this.envTex?.dispose();
+        this.live?.dispose();
+        this.videoTex?.dispose();
         this.renderer.dispose();
     }
 }
@@ -7086,6 +6397,210 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
+"[project]/src/lib/finishes.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "FINISHES",
+    ()=>FINISHES,
+    "applyFinish",
+    ()=>applyFinish,
+    "finishFor",
+    ()=>finishFor,
+    "makeLensMaterial",
+    ()=>makeLensMaterial
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/three/build/three.core.js [app-client] (ecmascript)");
+;
+const FINISHES = {
+    gold: {
+        metalness: 1,
+        roughness: 0.2,
+        clearcoat: 0,
+        clearcoatRoughness: 0,
+        ior: 1.5,
+        specularIntensity: 1
+    },
+    rosegold: {
+        metalness: 1,
+        roughness: 0.24,
+        clearcoat: 0,
+        clearcoatRoughness: 0,
+        ior: 1.5,
+        specularIntensity: 1
+    },
+    silver: {
+        metalness: 1,
+        roughness: 0.16,
+        clearcoat: 0,
+        clearcoatRoughness: 0,
+        ior: 1.5,
+        specularIntensity: 1
+    },
+    titanium: {
+        metalness: 1,
+        roughness: 0.32,
+        clearcoat: 0,
+        clearcoatRoughness: 0,
+        ior: 1.5,
+        specularIntensity: 1
+    },
+    gunmetal: {
+        metalness: 1,
+        roughness: 0.28,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.2,
+        ior: 1.5,
+        specularIntensity: 1
+    },
+    acetate: {
+        metalness: 0,
+        roughness: 0.18,
+        clearcoat: 1,
+        clearcoatRoughness: 0.05,
+        ior: 1.49,
+        specularIntensity: 1
+    }
+};
+function finishFor(colorName, metal) {
+    if (!metal) return "acetate";
+    if (/rose|copper|bronze/i.test(colorName)) return "rosegold";
+    if (/silver|chrome|steel|platinum/i.test(colorName)) return "silver";
+    if (/gunmetal/i.test(colorName)) return "gunmetal";
+    if (/titan/i.test(colorName)) return "titanium";
+    return "gold";
+}
+function applyFinish(m, f) {
+    const p = FINISHES[f];
+    m.metalness = p.metalness;
+    m.roughness = p.roughness;
+    m.clearcoat = p.clearcoat;
+    m.clearcoatRoughness = p.clearcoatRoughness;
+    m.ior = p.ior;
+    m.specularIntensity = p.specularIntensity;
+}
+function makeLensMaterial(tint, frameWidthCm) {
+    const thickness = 0.5 / frameWidthCm;
+    const m = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["MeshPhysicalMaterial"]({
+        color: 0xffffff,
+        metalness: 0,
+        roughness: 0.05,
+        transmission: 0.95,
+        ior: 1.52,
+        thickness,
+        attenuationColor: new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Color"](tint),
+        attenuationDistance: thickness / 0.18,
+        clearcoat: 1,
+        clearcoatRoughness: 0.03,
+        specularIntensity: 0.7,
+        envMapIntensity: 0.9
+    });
+    m.dispersion = 0.25; // chromatic dispersion (three r163+)
+    return m;
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/src/lib/liveEnv.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "createLiveEnvironment",
+    ()=>createLiveEnvironment
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/three/build/three.core.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/three/build/three.module.js [app-client] (ecmascript) <locals>");
+;
+function createLiveEnvironment(renderer, scene, video, opts = {}) {
+    const interval = opts.intervalMs ?? 450;
+    const W = 256, H = 128;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#808080";
+    ctx.fillRect(0, 0, W, H);
+    const tiny = document.createElement("canvas");
+    tiny.width = 24;
+    tiny.height = 14;
+    const tctx = tiny.getContext("2d", {
+        willReadFrequently: true
+    });
+    const tex = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CanvasTexture"](canvas);
+    tex.mapping = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EquirectangularReflectionMapping"];
+    tex.colorSpace = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$core$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SRGBColorSpace"];
+    const pmrem = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$three$2f$build$2f$three$2e$module$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["PMREMGenerator"](renderer);
+    let target = null;
+    let last = -1e9;
+    const avg = {
+        r: 128,
+        g: 128,
+        b: 128
+    };
+    const clamp = (v)=>Math.max(0, Math.min(255, Math.round(v)));
+    const css = (r, g, b)=>`rgb(${clamp(r)},${clamp(g)},${clamp(b)})`;
+    function update(now) {
+        if (now - last < interval || video.readyState < 2 || !video.videoWidth) return;
+        last = now;
+        // 1. room colour + brightness from a tiny copy of the frame
+        tctx.drawImage(video, 0, 0, tiny.width, tiny.height);
+        const d = tctx.getImageData(0, 0, tiny.width, tiny.height).data;
+        let r = 0, g = 0, b = 0;
+        const n = d.length / 4;
+        for(let i = 0; i < d.length; i += 4){
+            r += d[i];
+            g += d[i + 1];
+            b += d[i + 2];
+        }
+        avg.r += 0.4 * (r / n - avg.r);
+        avg.g += 0.4 * (g / n - avg.g);
+        avg.b += 0.4 * (b / n - avg.b);
+        const luma = (0.2126 * avg.r + 0.7152 * avg.g + 0.0722 * avg.b) / 255; // 0..1
+        // 2. paint the equirectangular map, blended over the last one for smooth changes
+        ctx.globalAlpha = 0.45;
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, css(avg.r * 1.55 + 25, avg.g * 1.55 + 25, avg.b * 1.55 + 25)); // ceiling
+        grad.addColorStop(0.5, css(avg.r, avg.g, avg.b)); // horizon
+        grad.addColorStop(1, css(avg.r * 0.45, avg.g * 0.42, avg.b * 0.4)); // floor
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 0.5;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(tiny, W * 0.12, H * 0.2, W * 0.26, H * 0.6); // behind the user  (-Z)
+        ctx.drawImage(tiny, W * 0.62, H * 0.2, W * 0.26, H * 0.6); // in front          (+Z)
+        // a soft window / ceiling light, stronger in bright rooms, gives frames a clean highlight
+        ctx.globalAlpha = 0.5;
+        const sx = W * 0.75, sy = H * 0.16;
+        const soft = ctx.createRadialGradient(sx, sy, 0, sx, sy, H * 0.34);
+        const lum = 200 + 55 * luma;
+        soft.addColorStop(0, css(lum, lum, lum));
+        soft.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = soft;
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+        // 3. turn it into a PBR reflection map and swap it in
+        tex.needsUpdate = true;
+        const next = pmrem.fromEquirectangular(tex);
+        scene.environment = next.texture;
+        target?.dispose();
+        target = next;
+        scene.environmentIntensity = 0.55 + 0.7 * luma;
+    }
+    return {
+        update,
+        dispose () {
+            target?.dispose();
+            tex.dispose();
+            pmrem.dispose();
+        }
+    };
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
 ]);
 
-//# sourceMappingURL=src_1z8j3pu._.js.map
+//# sourceMappingURL=src_009r-st._.js.map
