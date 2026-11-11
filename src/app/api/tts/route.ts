@@ -14,6 +14,11 @@ const DEFAULT_VOICE = "cgSgspJ2msm6clMCkdW9";
 const FAST = process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5"; // quick replies, good for chatting
 const EXPRESSIVE = "eleven_v3"; // the one that covers Urdu
 
+// removes spaces and quote marks that sometimes get pasted around a key
+function getKey() {
+  return (process.env.ELEVENLABS_API_KEY || "").trim().replace(/^["']+|["']+$/g, "");
+}
+
 function voiceFor(lang: string) {
   return process.env[`ELEVENLABS_VOICE_ID_${lang.toUpperCase()}`] || process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE;
 }
@@ -51,7 +56,7 @@ function today() {
 }
 
 export async function POST(req: Request) {
-  const key = process.env.ELEVENLABS_API_KEY;
+  const key = getKey();
   if (!key) return new Response("ELEVENLABS_API_KEY is not set", { status: 501 });
 
   let text = "";
@@ -77,12 +82,26 @@ export async function POST(req: Request) {
   return new Response(r.body, { headers: { "Content-Type": "audio/mpeg", "Cache-Control": "no-store" } });
 }
 
-// Open /api/tts in the browser to check the voice works (English and Urdu) and see the exact error if not.
+// Open /api/tts in the browser to see what this server can see (names only, never the key itself).
 export async function GET() {
-  const key = process.env.ELEVENLABS_API_KEY;
+  const key = getKey();
   today();
-  const info = { keyFound: !!key, usedToday: used, dailyLimit: DAILY_LIMIT, voice: voiceFor("en") };
-  if (!key) return Response.json({ ...info, ok: false, problem: "ELEVENLABS_API_KEY is not set on this server" });
+  const info = {
+    keyFound: !!key,
+    keyLength: key.length, // a real ElevenLabs key is usually around 50+ characters
+    vercelEnvironment: process.env.VERCEL_ENV ?? "local", // production / preview / development
+    variablesWithElevenInTheName: Object.keys(process.env).filter((k) => /eleven/i.test(k)),
+    usedToday: used,
+    dailyLimit: DAILY_LIMIT,
+  };
+  if (!key) {
+    return Response.json({
+      ...info,
+      ok: false,
+      problem:
+        "No ELEVENLABS_API_KEY on this server. If variablesWithElevenInTheName is empty the variable was never saved for this environment; if it lists a different spelling, rename it exactly to ELEVENLABS_API_KEY. Then redeploy.",
+    });
+  }
 
   const en = await speak(key, voiceFor("en"), "Test", "en");
   const ur = await speak(key, voiceFor("ur"), "Test", "ur");

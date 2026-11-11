@@ -781,6 +781,10 @@
     max-width: var(--container-6xl);
   }
 
+  .max-w-\[9rem\] {
+    max-width: 9rem;
+  }
+
   .max-w-lg {
     max-width: var(--container-lg);
   }
@@ -1168,6 +1172,10 @@
 
   .bg-surface-2 {
     background-color: var(--surface-2);
+  }
+
+  .bg-transparent {
+    background-color: #0000;
   }
 
   .bg-white {

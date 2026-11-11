@@ -9,7 +9,7 @@ import { cart, money, useCart } from "@/lib/cart";
 import { recommend, toneKey } from "@/lib/stylist";
 import { usePrefs } from "@/components/Providers";
 import AIStylistOverlay from "@/components/AIStylistOverlay";
-import type { Key } from "@/lib/i18n";
+import { LANGS, type Key, type Lang } from "@/lib/i18n";
 
 const TryOnView = dynamic(() => import("@/components/TryOnView"), {
   ssr: false,
@@ -18,7 +18,7 @@ const TryOnView = dynamic(() => import("@/components/TryOnView"), {
 
 function Studio({ searchParams }: { searchParams: Promise<{ id?: string; color?: string }> }) {
   const params = use(searchParams);
-  const { t } = usePrefs();
+  const { t, lang, setLang } = usePrefs();
   const router = useRouter();
   const { count } = useCart();
 
@@ -50,17 +50,35 @@ function Studio({ searchParams }: { searchParams: Promise<{ id?: string; color?:
     // h-dvh = the part of the screen you can actually see (excludes the browser bars)
     <div className="fixed inset-x-0 top-0 z-[70] h-dvh bg-black/70 lg:p-6 lg:backdrop-blur-sm">
       <div className="mx-auto grid h-full w-full max-w-6xl grid-rows-[3.5rem_minmax(0,1fr)_auto] overflow-hidden bg-bg text-fg lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-[3.5rem_minmax(0,1fr)] lg:rounded-[2rem]">
-        {/* ---------- top bar ---------- */}
-        <div className="flex items-center justify-between border-b border-line px-3 lg:col-start-1">
-          <Link href="/" aria-label="Close" className="flex h-11 w-11 items-center justify-center rounded-xl hover:bg-surface-2">
+        {/* ---------- top bar: close, title, AI voice language, cart ---------- */}
+        <div className="flex items-center justify-between gap-2 border-b border-line px-2 lg:col-start-1">
+          <Link href="/" aria-label="Close" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl hover:bg-surface-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </Link>
-          <div className="font-display text-xl">{t("tryon.title")}</div>
-          <Link href="/cart" className="flex h-11 min-w-11 items-center justify-center rounded-xl px-2 text-sm hover:bg-surface-2">
-            {t("nav.cart")} ({count})
-          </Link>
+          <div className="font-display hidden truncate text-xl sm:block">{t("tryon.title")}</div>
+          <div className="flex min-w-0 items-center gap-1">
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value as Lang)}
+              aria-label="AI voice language"
+              className="h-10 max-w-[9rem] cursor-pointer appearance-none truncate rounded-xl border border-line bg-transparent px-3 text-sm text-fg outline-none focus:border-accent"
+            >
+              {LANGS.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+            <Link href="/cart" aria-label={t("nav.cart")} className="flex h-11 min-w-11 items-center justify-center gap-1 rounded-xl px-2 text-sm hover:bg-surface-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 7h12l-1 12H7L6 7z" />
+                <path d="M9 7a3 3 0 0 1 6 0" />
+              </svg>
+              <span>{count}</span>
+            </Link>
+          </div>
         </div>
 
         {/* ---------- camera: its own row, never shared with the drawer ---------- */}

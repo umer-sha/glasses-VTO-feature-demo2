@@ -351,10 +351,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$stylist$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/stylist.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Providers.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AIStylistOverlay$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/AIStylistOverlay.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/i18n.ts [app-client] (ecmascript)");
 ;
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -384,7 +386,7 @@ _c = TryOnView;
 function Studio({ searchParams }) {
     _s();
     const params = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["use"])(searchParams);
-    const { t } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"])();
+    const { t, lang, setLang } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const { count } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCart"])();
     const [frameKey, setFrameKey] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(params.id && __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][params.id] ? params.id : "bold");
@@ -420,12 +422,12 @@ function Studio({ searchParams }) {
             className: "mx-auto grid h-full w-full max-w-6xl grid-rows-[3.5rem_minmax(0,1fr)_auto] overflow-hidden bg-bg text-fg lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-[3.5rem_minmax(0,1fr)] lg:rounded-[2rem]",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex items-center justify-between border-b border-line px-3 lg:col-start-1",
+                    className: "flex items-center justify-between gap-2 border-b border-line px-2 lg:col-start-1",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                             href: "/",
                             "aria-label": "Close",
-                            className: "flex h-11 w-11 items-center justify-center rounded-xl hover:bg-surface-2",
+                            className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl hover:bg-surface-2",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                 width: "20",
                                 height: "20",
@@ -452,21 +454,82 @@ function Studio({ searchParams }) {
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "font-display text-xl",
+                            className: "font-display hidden truncate text-xl sm:block",
                             children: t("tryon.title")
                         }, void 0, false, {
                             fileName: "[project]/src/app/try-on/page.tsx",
                             lineNumber: 60,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                            href: "/cart",
-                            className: "flex h-11 min-w-11 items-center justify-center rounded-xl px-2 text-sm hover:bg-surface-2",
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex min-w-0 items-center gap-1",
                             children: [
-                                t("nav.cart"),
-                                " (",
-                                count,
-                                ")"
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                    value: lang,
+                                    onChange: (e)=>setLang(e.target.value),
+                                    "aria-label": "AI voice language",
+                                    className: "h-10 max-w-[9rem] cursor-pointer appearance-none truncate rounded-xl border border-line bg-transparent px-3 text-sm text-fg outline-none focus:border-accent",
+                                    children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LANGS"].map((l)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                            value: l.code,
+                                            children: l.label
+                                        }, l.code, false, {
+                                            fileName: "[project]/src/app/try-on/page.tsx",
+                                            lineNumber: 69,
+                                            columnNumber: 17
+                                        }, this))
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/try-on/page.tsx",
+                                    lineNumber: 62,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                    href: "/cart",
+                                    "aria-label": t("nav.cart"),
+                                    className: "flex h-11 min-w-11 items-center justify-center gap-1 rounded-xl px-2 text-sm hover:bg-surface-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                            width: "18",
+                                            height: "18",
+                                            viewBox: "0 0 24 24",
+                                            fill: "none",
+                                            stroke: "currentColor",
+                                            strokeWidth: "1.8",
+                                            strokeLinecap: "round",
+                                            strokeLinejoin: "round",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                    d: "M6 7h12l-1 12H7L6 7z"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/try-on/page.tsx",
+                                                    lineNumber: 76,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                    d: "M9 7a3 3 0 0 1 6 0"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/try-on/page.tsx",
+                                                    lineNumber: 77,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/try-on/page.tsx",
+                                            lineNumber: 75,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            children: count
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/try-on/page.tsx",
+                                            lineNumber: 79,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/try-on/page.tsx",
+                                    lineNumber: 74,
+                                    columnNumber: 13
+                                }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/try-on/page.tsx",
@@ -496,7 +559,7 @@ function Studio({ searchParams }) {
                             }
                         }, void 0, false, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 68,
+                            lineNumber: 86,
                             columnNumber: 11
                         }, this),
                         rec && showPick && faceMetrics && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -513,7 +576,7 @@ function Studio({ searchParams }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 85,
+                                            lineNumber: 103,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -523,13 +586,13 @@ function Studio({ searchParams }) {
                                             children: "✕"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 86,
+                                            lineNumber: 104,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 84,
+                                    lineNumber: 102,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -541,7 +604,7 @@ function Studio({ searchParams }) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 88,
+                                    lineNumber: 106,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -554,7 +617,7 @@ function Studio({ searchParams }) {
                                                     children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$glasses$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["glasses"][rec.id].name
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                                    lineNumber: 93,
+                                                    lineNumber: 111,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -562,13 +625,13 @@ function Studio({ searchParams }) {
                                                     children: rec.colorName
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                                    lineNumber: 94,
+                                                    lineNumber: 112,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 92,
+                                            lineNumber: 110,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -581,25 +644,25 @@ function Studio({ searchParams }) {
                                             children: t("tryon.apply")
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 96,
+                                            lineNumber: 114,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 91,
+                                    lineNumber: 109,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 83,
+                            lineNumber: 101,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/try-on/page.tsx",
-                    lineNumber: 67,
+                    lineNumber: 85,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
@@ -620,12 +683,12 @@ function Studio({ searchParams }) {
                                 started: started
                             }, void 0, false, {
                                 fileName: "[project]/src/app/try-on/page.tsx",
-                                lineNumber: 118,
+                                lineNumber: 136,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 117,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -638,7 +701,7 @@ function Studio({ searchParams }) {
                                             children: t("tryon.frames")
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 131,
+                                            lineNumber: 149,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -650,13 +713,13 @@ function Studio({ searchParams }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 132,
+                                            lineNumber: 150,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 130,
+                                    lineNumber: 148,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -670,7 +733,7 @@ function Studio({ searchParams }) {
                                                     children: g.name
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                                    lineNumber: 145,
+                                                    lineNumber: 163,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -678,7 +741,7 @@ function Studio({ searchParams }) {
                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$cart$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["money"])(g.price)
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                                    lineNumber: 146,
+                                                    lineNumber: 164,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -686,24 +749,24 @@ function Studio({ searchParams }) {
                                                     children: g.tagline
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                                    lineNumber: 147,
+                                                    lineNumber: 165,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, g.id, true, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 138,
+                                            lineNumber: 156,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 136,
+                                    lineNumber: 154,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 129,
+                            lineNumber: 147,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -721,12 +784,12 @@ function Studio({ searchParams }) {
                                             }
                                         }, c.name, false, {
                                             fileName: "[project]/src/app/try-on/page.tsx",
-                                            lineNumber: 156,
+                                            lineNumber: 174,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 154,
+                                    lineNumber: 172,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -734,13 +797,13 @@ function Studio({ searchParams }) {
                                     children: active.name
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 168,
+                                    lineNumber: 186,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 153,
+                            lineNumber: 171,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -756,7 +819,7 @@ function Studio({ searchParams }) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 172,
+                                    lineNumber: 190,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -768,19 +831,19 @@ function Studio({ searchParams }) {
                                     children: t("product.buy")
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/try-on/page.tsx",
-                                    lineNumber: 175,
+                                    lineNumber: 193,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/try-on/page.tsx",
-                            lineNumber: 171,
+                            lineNumber: 189,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/try-on/page.tsx",
-                    lineNumber: 112,
+                    lineNumber: 130,
                     columnNumber: 9
                 }, this)
             ]
@@ -795,7 +858,7 @@ function Studio({ searchParams }) {
         columnNumber: 5
     }, this));
 }
-_s(Studio, "Mq/uqfKJS0yvUneuXPqM3UrxkZ4=", false, function() {
+_s(Studio, "fcVFHV/+W5FbiXo+1elmF4o3qpY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Providers$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePrefs"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
@@ -810,19 +873,19 @@ function TryOnPage({ searchParams }) {
             children: "…"
         }, void 0, false, {
             fileName: "[project]/src/app/try-on/page.tsx",
-            lineNumber: 193,
+            lineNumber: 211,
             columnNumber: 25
         }, this),
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Studio, {
             searchParams: searchParams
         }, void 0, false, {
             fileName: "[project]/src/app/try-on/page.tsx",
-            lineNumber: 194,
+            lineNumber: 212,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/try-on/page.tsx",
-        lineNumber: 193,
+        lineNumber: 211,
         columnNumber: 5
     }, this);
 }
